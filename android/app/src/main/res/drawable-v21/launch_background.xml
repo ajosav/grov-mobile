@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Launch screen: a flat canvas colour. The logo is drawn by Flutter's first
+     frame (SplashView) on this same ground, so there is no white flash and no
+     default Flutter logo. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/launch_background" />
+</layer-list>

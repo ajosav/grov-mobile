@@ -1,0 +1,70 @@
+name: app_mobile
+description: "Household food planning, budgeting and buying for Nigerian homes. Offline-first Flutter app for iOS and Android."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.14.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State: Bloc/Cubit are the view models (MVVM).
+  flutter_bloc: ^9.1.1
+  bloc_concurrency: ^0.3.0
+  stream_transform: ^2.1.2
+
+  # Routing and DI
+  go_router: ^18.1.4
+  get_it: ^9.3.0
+
+  # Offline database
+  drift: ^2.35.4
+  drift_flutter: ^0.3.1
+
+  # Models and serialization
+  freezed_annotation: ^3.1.0
+  json_annotation: ^4.12.0
+
+  # Platform and network
+  dio: ^5.11.1
+  connectivity_plus: ^7.3.2
+  flutter_secure_storage: ^11.2.0
+  device_info_plus: ^13.0.0
+  path_provider: ^2.1.6
+  path: ^1.9.1
+  intl: ^0.20.3
+  flutter_localizations:
+    sdk: flutter
+  material_ui: ^1.11.1
+  retrofit: ^4.10.0
+  flutter_svg: ^2.5.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  build_runner: ^2.17.1
+  freezed: ^4.0.3
+  json_serializable: ^6.15.2
+  drift_dev: ^2.35.3
+  bloc_test: ^10.0.0
+  mocktail: ^1.0.5
+  retrofit_generator: ^10.3.3
+
+flutter:
+  generate: true
+  uses-material-design: true
+  assets:
+    - assets/brand/
+    - assets/auth/
+    - assets/icons/
+  fonts:
+    # Both faces include the naira sign and tabular figures (DESIGN.md, Naira Face Rule).
+    - family: Bricolage Grotesque
+      fonts:
+        - asset: assets/fonts/BricolageGrotesque-Variable.ttf
+    - family: Plus Jakarta Sans
+      fonts:
+        - asset: assets/fonts/PlusJakartaSans-Variable.ttf

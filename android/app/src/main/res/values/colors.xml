@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Launch ground = the app canvas token (light: #F7F5F0). Native resources
+         cannot read Dart tokens, so this is the one place it is copied. -->
+    <color name="launch_background">#F7F5F0</color>
+</resources>
