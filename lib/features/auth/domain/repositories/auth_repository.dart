@@ -5,14 +5,13 @@ import '../entities/new_account.dart';
 import '../entities/otp_challenge.dart';
 import '../entities/password_check.dart';
 
-/// Sign-on: finding an account, creating one, logging in, the email code,
-/// resetting a password and adding a phone. None of it is stored here: the
-/// session cubit stores the session the outcome carries.
 // ignore: use_primary_constructors (no constructor by design: interface/static-only)
 abstract interface class AuthRepository {
   Future<Result<AccountLookup>> lookup(String email);
 
   Future<Result<PasswordCheck>> checkPassword(String password, {String? email});
+
+  Future<Result<String>> getTermsVersion();
 
   Future<Result<AuthOutcome>> signUp(NewAccount account);
 

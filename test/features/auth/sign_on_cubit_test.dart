@@ -175,6 +175,8 @@ void main() {
   group('sign up', () {
     Future<void> join(SignOnCubit c, {String phone = '0803 123 4567'}) async {
       c.emailChanged('ngozi@example.com');
+      await c.loadTermsVersion();
+      c.setTermsAccepted(true);
       await c.signUp(
         firstName: 'Ngozi',
         lastName: 'Okafor',
@@ -198,6 +200,7 @@ void main() {
       act: join,
       verify: (c) {
         expect(repo.calls, contains('signUp:+2348031234567'));
+        expect(repo.lastSignUp?.termsVersion, 'terms-test');
         expect(c.state.challenge?.nextSendAt, DateTime.utc(2026, 11, 21, 10));
         expect(c.state.effect, isA<SignOnSignedIn>());
       },
@@ -224,6 +227,58 @@ void main() {
     );
 
     blocTest<SignOnCubit, SignOnState>(
+      'stale terms (409) is named, not shown as a generic error',
+      setUp: () => repo.signUpResult = const Result.err(
+        ConflictFailure('x', 'AUTH_TERMS_VERSION_STALE'),
+      ),
+      build: build,
+      act: join,
+      verify: (c) {
+        expect(c.state.error, AuthError.termsStale);
+        expect(c.state.termsVersion, isNull);
+        expect(c.state.termsAccepted, isFalse);
+      },
+    );
+
+    blocTest<SignOnCubit, SignOnState>(
+      'signup is blocked until the current terms are fetched and accepted',
+      build: build,
+      act: (c) async {
+        c.emailChanged('ngozi@example.com');
+        await c.signUp(
+          firstName: 'Ngozi',
+          lastName: 'Okafor',
+          phone: '0803 123 4567',
+          password: 'Secret!123',
+        );
+      },
+      verify: (_) => expect(
+        repo.calls.where((call) => call.startsWith('signUp:')),
+        isEmpty,
+      ),
+    );
+
+    blocTest<SignOnCubit, SignOnState>(
+      'a failed terms request prevents signup and exposes the failure',
+      setUp: () => repo.termsVersionResult = const Result.err(OfflineFailure()),
+      build: build,
+      act: (c) async {
+        await c.loadTermsVersion();
+        c.setTermsAccepted(true);
+        await c.signUp(
+          firstName: 'Ngozi',
+          lastName: 'Okafor',
+          phone: '0803 123 4567',
+          password: 'Secret!123',
+        );
+      },
+      verify: (c) {
+        expect(c.state.error, AuthError.offline);
+        expect(repo.calls.where((call) => call.startsWith('signUp:')), isEmpty);
+      },
+    );
+
+    blocTest<SignOnCubit, SignOnState>(
       'a common password (422) is reported',
       setUp: () => repo.signUpResult = const Result.err(
         ValidationFailure({}, 'x', 'PASSWORD_COMMON'),
@@ -239,7 +294,7 @@ void main() {
       act: (c) => join(c, phone: '12345'),
       verify: (c) {
         expect(c.state.error, AuthError.phoneInvalid);
-        expect(repo.calls, isEmpty);
+        expect(repo.calls.where((call) => call.startsWith('signUp:')), isEmpty);
       },
     );
 
@@ -255,7 +310,8 @@ void main() {
           password: 'abc',
         );
       },
-      verify: (_) => expect(repo.calls, isEmpty),
+      verify: (_) =>
+          expect(repo.calls.where((call) => call.startsWith('signUp:')), isEmpty),
     );
   });
 

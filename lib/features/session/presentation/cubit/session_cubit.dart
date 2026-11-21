@@ -39,8 +39,9 @@ class SessionCubit({
     emit(SessionState.signedIn(session));
   }
 
-  Future<void> signOut() async {
-    await _signOut(const NoParams());
+  /// [revoke] is false when the server already ended the session.
+  Future<void> signOut({bool revoke = true}) async {
+    await _signOut(revoke);
     emit(const SessionState.signedOut());
   }
 
@@ -60,7 +61,7 @@ class SessionCubit({
     }
     final next = result.valueOrNull;
     if (next == null) {
-      await signOut();
+      await signOut(revoke: false);
       return null;
     }
     emit(SessionState.signedIn(next));

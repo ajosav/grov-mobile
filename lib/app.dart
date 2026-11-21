@@ -19,7 +19,6 @@ class const AppRoot({super.key}) extends StatefulWidget {
 }
 
 class _AppRootState() extends State<AppRoot> {
-  // Built once; light/dark ThemeData are not rebuilt on every frame.
   final _light = AppTheme.light();
   final _dark = AppTheme.dark();
 
@@ -32,7 +31,6 @@ class _AppRootState() extends State<AppRoot> {
         BlocProvider.value(value: getIt<SyncStatusCubit>()),
       ],
       child: BlocConsumer<DeviceSettingsCubit, DeviceSettingsState>(
-        // The only things MaterialApp needs from settings.
         listenWhen: (a, b) => a.effectiveLowEnd != b.effectiveLowEnd,
         listener: (context, state) {
           PaintingBinding.instance.imageCache.maximumSizeBytes = AppPerformance(

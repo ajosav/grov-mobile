@@ -7,6 +7,7 @@ import '../../../../core/router/routes.dart';
 import '../../../../core/theme/app_tokens.dart' hide formatNaira;
 import '../../../../core/widgets/app_assets.dart';
 import '../../../../core/widgets/app_button.dart';
+import '../../../../core/widgets/app_progress.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../session/presentation/cubit/session_cubit.dart';
 import '../../domain/entities/password_problem.dart';
@@ -54,9 +55,22 @@ class _ResetPasswordViewState() extends State<ResetPasswordView> {
       builder: (context, state) {
         void toWelcome() => context.go(Routes.welcome);
         if (state.link == ResetLinkStatus.checking) {
-          return const AuthScaffold(
+          return AuthScaffold(
             centerBody: true,
-            body: Center(child: CircularProgressIndicator()),
+            body: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                spacing: AppSpace.s4,
+                children: [
+                  AppProgress(size: 32, semanticLabel: l10n.authLoadingLink),
+                  Text(
+                    l10n.authLoadingLink,
+                    style: Theme.of(context).textTheme.bodyMedium
+                        ?.copyWith(color: context.tokens.inkMuted),
+                  ),
+                ],
+              ),
+            ),
           );
         }
         if (state.link == ResetLinkStatus.dead) {
@@ -139,6 +153,7 @@ class _ResetPasswordViewState() extends State<ResetPasswordView> {
             builder: (context, _) => AppButton(
               label: l10n.resetSave,
               loading: state.busy,
+              loadingLabel: l10n.authBusySaving,
               onPressed:
                   _password.text.isEmpty ||
                       state.problems.contains(PasswordProblem.tooShort) ||

@@ -144,6 +144,22 @@ void main() {
     expect(authErrorOf(const OfflineFailure()), AuthError.offline);
     expect(authErrorOf(const TimeoutFailure()), AuthError.timeout);
     expect(authErrorOf(const ServerFailure()), AuthError.server);
+    expect(
+      authErrorOf(const ConflictFailure('x', 'PHONE_ALREADY_SET')),
+      AuthError.phoneAlreadySet,
+    );
+    expect(
+      authErrorOf(const ConflictFailure('x', 'EMAIL_ALREADY_VERIFIED')),
+      AuthError.emailAlreadyVerified,
+    );
+    expect(
+      authErrorOf(const ConflictFailure('x', 'EMAIL_CHANGE_NOT_STARTED')),
+      AuthError.emailChangeNotStarted,
+    );
+    expect(
+      authErrorOf(const ConflictFailure('x', 'NEW_CODE')),
+      AuthError.unknown,
+    );
     expect(authErrorOf(const UnknownFailure()), AuthError.unknown);
     expect(authErrorOf(const NotFoundFailure()), AuthError.unknown);
     expect(authErrorOf(const CacheFailure()), AuthError.unknown);

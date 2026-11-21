@@ -13,6 +13,7 @@ import 'package:app_mobile/core/layout/two_pane.dart';
 import 'package:app_mobile/core/router/app_router.dart';
 import 'package:app_mobile/core/theme/app_theme.dart';
 import 'package:app_mobile/features/session/domain/entities/session.dart';
+import 'package:app_mobile/features/shell/presentation/widgets/floating_nav_bar.dart';
 import 'package:app_mobile/features/session/domain/repositories/session_repository.dart';
 import 'package:app_mobile/features/session/presentation/cubit/session_cubit.dart';
 import 'package:app_mobile/core/error/result.dart';
@@ -24,6 +25,8 @@ import 'package:material_ui/material_ui.dart';
 
 class _FakeSessions(this.stored) implements SessionRepository {
   Session? stored;
+  @override
+  Future<Result<void>> revoke() async => const Result.ok(null);
   @override
   Future<Result<Session?>> restore() async => Result.ok(stored);
   @override
@@ -88,7 +91,9 @@ Future<void> _pump(
 void main() {
   // The router builds the sign-on cubit from DI; tests give it a fake repo.
   setUp(() {
-    getIt.registerFactory(() => signOnCubitFor(FakeAuthRepository()));
+    getIt
+      ..registerFactory(() => signOnCubitFor(FakeAuthRepository()))
+      ..registerFactory(homeCubitFor);
   });
   tearDown(getIt.reset);
 
@@ -106,7 +111,7 @@ void main() {
       await session.restore();
       await tester.pumpAndSettle();
       expect(find.byType(WelcomeView), findsOneWidget);
-      expect(find.byType(NavigationBar), findsNothing);
+      expect(find.byType(FloatingNavBar), findsNothing);
     });
 
     testWidgets('signed in lands on Home with tabs', (tester) async {
@@ -115,7 +120,7 @@ void main() {
       await _pump(tester, const Size(390, 844), session);
       await session.restore();
       await tester.pumpAndSettle();
-      expect(find.text('No plan yet'), findsOneWidget);
+      expect(find.text('This week’s progress'), findsOneWidget);
     });
   });
 
@@ -131,7 +136,7 @@ void main() {
       addTearDown(s.close);
       await _pump(tester, const Size(360, 640), s);
       await tester.pumpAndSettle();
-      expect(find.byType(NavigationBar), findsOneWidget);
+      expect(find.byType(FloatingNavBar), findsOneWidget);
       expect(find.byType(NavigationRail), findsNothing);
       expect(tester.takeException(), isNull);
     });
@@ -142,7 +147,7 @@ void main() {
       await _pump(tester, const Size(700, 800), s);
       await tester.pumpAndSettle();
       expect(find.byType(NavigationRail), findsOneWidget);
-      expect(find.byType(NavigationBar), findsNothing);
+      expect(find.byType(FloatingNavBar), findsNothing);
     });
 
     testWidgets('1024pt iPad: rail, content stays capped', (tester) async {
@@ -163,10 +168,10 @@ void main() {
         await tester.pumpAndSettle();
 
         // Compact (folded): bottom bar. Go to the second tab.
-        expect(find.byType(NavigationBar), findsOneWidget);
+        expect(find.byType(FloatingNavBar), findsOneWidget);
         await tester.tap(
           find.descendant(
-            of: find.byType(NavigationBar),
+            of: find.byType(FloatingNavBar),
             matching: find.text('Shop'),
           ),
         );
@@ -178,7 +183,7 @@ void main() {
         tester.view.physicalSize = const Size(720, 800);
         await tester.pumpAndSettle();
         expect(find.byType(NavigationRail), findsOneWidget);
-        expect(find.byType(NavigationBar), findsNothing);
+        expect(find.byType(FloatingNavBar), findsNothing);
         expect(
           tester
               .widget<NavigationRail>(find.byType(NavigationRail))
@@ -192,7 +197,7 @@ void main() {
         await tester.pumpAndSettle();
         expect(
           tester
-              .widget<NavigationBar>(find.byType(NavigationBar))
+              .widget<FloatingNavBar>(find.byType(FloatingNavBar))
               .selectedIndex,
           1,
         );

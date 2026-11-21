@@ -3,6 +3,7 @@ import 'package:app_mobile/features/auth/domain/usecases/change_email_address.da
 import 'package:app_mobile/features/auth/domain/usecases/check_password.dart';
 import 'package:app_mobile/features/auth/domain/usecases/check_reset_link.dart';
 import 'package:app_mobile/features/auth/domain/usecases/complete_phone.dart';
+import 'package:app_mobile/features/auth/domain/usecases/get_terms_version.dart';
 import 'package:app_mobile/features/auth/domain/usecases/log_in.dart';
 import 'package:app_mobile/features/auth/domain/usecases/lookup_account.dart';
 import 'package:app_mobile/features/auth/domain/usecases/request_password_reset.dart';
@@ -15,6 +16,11 @@ import 'package:app_mobile/features/auth/presentation/cubit/forgot_password_cubi
 import 'package:app_mobile/features/auth/presentation/cubit/phone_cubit.dart';
 import 'package:app_mobile/features/auth/presentation/cubit/reset_password_cubit.dart';
 import 'package:app_mobile/features/auth/presentation/cubit/sign_on_cubit.dart';
+import 'package:app_mobile/core/platform/clock.dart';
+import 'package:app_mobile/features/home/data/repositories/fixture_home_repository.dart';
+import 'package:app_mobile/features/home/domain/repositories/home_repository.dart';
+import 'package:app_mobile/features/home/domain/usecases/watch_home.dart';
+import 'package:app_mobile/features/home/presentation/cubit/home_cubit.dart';
 import 'package:app_mobile/features/session/domain/repositories/session_repository.dart';
 import 'package:app_mobile/features/session/domain/usecases/refresh_session.dart';
 import 'package:app_mobile/features/session/domain/usecases/restore_session.dart';
@@ -60,6 +66,7 @@ SignOnCubit signOnCubitFor(AuthRepository repo) => SignOnCubit(
   lookupAccount: LookupAccount(repo),
   logIn: LogIn(repo),
   signUp: SignUp(repo),
+  getTermsVersion: GetTermsVersion(repo),
   checkPassword: CheckPassword(repo),
 );
 
@@ -92,3 +99,14 @@ ResetPasswordCubit resetPasswordCubitFor(
 
 PhoneCubit phoneCubitFor(AuthRepository repo) =>
     PhoneCubit(CompletePhone(repo));
+
+class const FixedClock(final DateTime _now) implements Clock {
+  @override
+  DateTime now() => _now;
+}
+
+/// Home over the fixture repository unless a test supplies its own.
+HomeCubit homeCubitFor([HomeRepository? repo, Clock? clock]) => HomeCubit(
+  watchHome: WatchHome(repo ?? const FixtureHomeRepository()),
+  clock: clock ?? FixedClock(DateTime(2026, 11, 21, 9)),
+);

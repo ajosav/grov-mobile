@@ -60,6 +60,8 @@ flutter:
     - assets/brand/
     - assets/auth/
     - assets/icons/
+    - assets/home/
+    - assets/images/
   fonts:
     # Both faces include the naira sign and tabular figures (DESIGN.md, Naira Face Rule).
     - family: Bricolage Grotesque

@@ -1,4 +1,5 @@
 import '../models/auth_response_model.dart';
+import '../models/client_config_model.dart';
 import '../models/forgot_accepted_model.dart';
 import '../models/lookup_response_model.dart';
 import '../models/otp_challenge_model.dart';
@@ -14,6 +15,8 @@ class const AuthRemoteDataSource(
   final GatedAuthApi _gated,
   final DeviceIdentityDataSource _device,
 ) {
+  Future<ClientConfigModel> getConfig() async => (await _signOn.getConfig()).data;
+
   Future<LookupResponseModel> lookup(String email) async =>
       (await _signOn.lookup({'email': email})).data;
 

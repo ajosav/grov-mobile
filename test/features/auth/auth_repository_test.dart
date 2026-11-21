@@ -103,11 +103,28 @@ void main() {
         GatedAuthApi(dio),
         DeviceIdentityDataSource(storage),
       ),
-      termsVersion: 'terms-test',
     );
   }
 
   group('requests match the API contract', () {
+    test('current terms version comes from the public client config', () async {
+      final stub = _Stub(
+        200,
+        _ok({
+          'legal': {
+            'termsVersion': 'terms-current',
+            'privacyVersion': 'privacy-current',
+          },
+        }),
+      );
+
+      final result = await repo(stub).getTermsVersion();
+
+      expect(stub.last!.method, 'GET');
+      expect(stub.last!.path, '/v1/config');
+      expect(result.valueOrNull, 'terms-current');
+    });
+
     test(
       'log-in posts the PASSWORD method and a device with a v7 id',
       () async {
@@ -159,6 +176,7 @@ void main() {
           lastName: 'Okafor',
           phone: '+2348031234567',
           password: 'Secret!123',
+          termsVersion: 'terms-test',
         ),
       );
       expect(stub.last!.path, '/v1/auth/signup');
@@ -182,6 +200,7 @@ void main() {
             lastName: '',
             phone: '+2348031234567',
             password: 'Secret!123',
+            termsVersion: 'terms-test',
           ),
         );
         final body = stub.body! as Map<String, dynamic>;

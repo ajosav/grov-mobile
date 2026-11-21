@@ -6,9 +6,9 @@ Start with [ARCHITECTURE.md](ARCHITECTURE.md); agent rules are in [AGENTS.md](AG
 
 ```
 flutter pub get && dart run build_runner build --delete-conflicting-outputs && flutter gen-l10n
-flutter run                                                   # debug: sign-on runs on sample data, no backend needed
 flutter run --dart-define=API_BASE_URL=http://10.0.2.2:3000   # Android emulator -> host (live API)
+flutter run --dart-define=API_BASE_URL=http://localhost:3000  # iOS simulator -> host
 flutter test
 ```
 
-Debug builds show a **Debug** chip on Welcome: it switches between sample data and the live API and lists what to type to reach each screen (for example `known@x.com` logs in, `new@x.com` joins, code `123456` is accepted). Release builds do not contain any of it.
+Sign-on always talks to the live API. `API_BASE_URL` defaults to `http://localhost:3000`; on an Android emulator use `http://10.0.2.2:3000` as above.

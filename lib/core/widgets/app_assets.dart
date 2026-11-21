@@ -15,4 +15,7 @@ abstract final class AppAssets {
   static const mail = 'assets/icons/mail.svg';
   static const alert = 'assets/icons/alert.svg';
   static const info = 'assets/icons/info.svg';
+
+  static const heroRings = 'assets/home/rings.svg';
+  static const heroContour = 'assets/home/contour.svg';
 }

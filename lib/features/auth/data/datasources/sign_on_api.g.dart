@@ -21,6 +21,36 @@ class _SignOnApi implements SignOnApi {
   final ParseErrorLogger? errorLogger;
 
   @override
+  Future<ApiResponse<ClientConfigModel>> getConfig() async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<ApiResponse<ClientConfigModel>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/v1/config',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ApiResponse<ClientConfigModel> _value;
+    try {
+      _value = ApiResponse<ClientConfigModel>.fromJson(
+        _result.data!,
+        (json) => ClientConfigModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
   Future<ApiResponse<LookupResponseModel>> lookup(
     Map<String, dynamic> body,
   ) async {

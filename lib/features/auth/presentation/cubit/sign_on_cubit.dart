@@ -1,12 +1,14 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/error/result.dart';
+import '../../../../core/usecase/usecase.dart';
 import '../../domain/email_format.dart';
 import '../../domain/entities/auth_outcome.dart';
 import '../../domain/entities/new_account.dart';
 import '../../domain/nigerian_phone.dart';
 import '../../domain/password_policy.dart';
 import '../../domain/usecases/check_password.dart';
+import '../../domain/usecases/get_terms_version.dart';
 import '../../domain/usecases/log_in.dart';
 import '../../domain/usecases/lookup_account.dart';
 import '../../domain/usecases/sign_up.dart';
@@ -20,6 +22,7 @@ class SignOnCubit({
   required final LookupAccount _lookupAccount,
   required final LogIn _logIn,
   required final SignUp _signUp,
+  required final GetTermsVersion _getTermsVersion,
   required CheckPassword checkPassword,
 }) extends Cubit<SignOnState> with SafeEmit<SignOnState> {
   this : _live = LivePasswordCheck(checkPassword), super(const SignOnState());
@@ -28,6 +31,42 @@ class SignOnCubit({
 
   void emailChanged(String value) =>
       emit(state.copyWith(email: value.trim(), error: null));
+
+  Future<void> loadTermsVersion() async {
+    if (state.termsLoading) {
+      return;
+    }
+    emit(
+      state.copyWith(
+        termsLoading: true,
+        termsVersion: null,
+        termsAccepted: false,
+        error: null,
+      ),
+    );
+    switch (await _getTermsVersion(const NoParams())) {
+      case Ok(:final value) when value.trim().isNotEmpty:
+        emit(state.copyWith(termsLoading: false, termsVersion: value));
+      case Ok():
+        emit(
+          state.copyWith(termsLoading: false, error: AuthError.unknown),
+        );
+      case Err(:final failure):
+        emit(
+          state.copyWith(
+            termsLoading: false,
+            error: authErrorOf(failure),
+          ),
+        );
+    }
+  }
+
+  void setTermsAccepted(bool accepted) {
+    if (state.termsVersion == null || state.termsLoading) {
+      return;
+    }
+    emit(state.copyWith(termsAccepted: accepted));
+  }
 
   Future<void> continueWithEmail() async {
     if (state.busy) {
@@ -85,7 +124,11 @@ class SignOnCubit({
     required String phone,
     required String password,
   }) async {
-    if (state.busy) {
+    final termsVersion = state.termsVersion;
+    if (state.busy ||
+        termsVersion == null ||
+        !state.termsAccepted ||
+        state.termsLoading) {
       return;
     }
     final normalised = normalizeNigerianPhone(phone);
@@ -98,17 +141,29 @@ class SignOnCubit({
       return;
     }
     emit(state.copyWith(busy: true, error: null));
-    _finish(
-      await _signUp(
-        NewAccount(
-          email: state.email,
-          firstName: firstName.trim(),
-          lastName: lastName.trim(),
-          phone: normalised,
-          password: password,
-        ),
+    final result = await _signUp(
+      NewAccount(
+        email: state.email,
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        phone: normalised,
+        password: password,
+        termsVersion: termsVersion,
       ),
     );
+    if (result case Err(:final failure)
+        when authErrorOf(failure) == AuthError.termsStale) {
+      emit(
+        state.copyWith(
+          busy: false,
+          error: AuthError.termsStale,
+          termsVersion: null,
+          termsAccepted: false,
+        ),
+      );
+      return;
+    }
+    _finish(result);
   }
 
   void logInInstead() => emit(

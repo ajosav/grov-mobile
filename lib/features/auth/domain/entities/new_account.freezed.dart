@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$NewAccount {
 
- String get email; String get firstName; String get lastName; String get phone; String get password;
+ String get email; String get firstName; String get lastName; String get phone; String get password; String get termsVersion;
 /// Create a copy of NewAccount
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -27,20 +27,20 @@ $NewAccountCopyWith<NewAccount> get copyWith => _$NewAccountCopyWithImpl<NewAcco
 @override
 bool operator ==(Object other) {
   final _this = this as NewAccount;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NewAccount&&(identical(other.email, _this.email) || other.email == _this.email)&&(identical(other.firstName, _this.firstName) || other.firstName == _this.firstName)&&(identical(other.lastName, _this.lastName) || other.lastName == _this.lastName)&&(identical(other.phone, _this.phone) || other.phone == _this.phone)&&(identical(other.password, _this.password) || other.password == _this.password));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NewAccount&&(identical(other.email, _this.email) || other.email == _this.email)&&(identical(other.firstName, _this.firstName) || other.firstName == _this.firstName)&&(identical(other.lastName, _this.lastName) || other.lastName == _this.lastName)&&(identical(other.phone, _this.phone) || other.phone == _this.phone)&&(identical(other.password, _this.password) || other.password == _this.password)&&(identical(other.termsVersion, _this.termsVersion) || other.termsVersion == _this.termsVersion));
 }
 
 
 @override
 int get hashCode {
   final _this = this as NewAccount;
-  return Object.hash(runtimeType,_this.email,_this.firstName,_this.lastName,_this.phone,_this.password);
+  return Object.hash(runtimeType,_this.email,_this.firstName,_this.lastName,_this.phone,_this.password,_this.termsVersion);
 }
 
 @override
 String toString() {
   final _this = this as NewAccount;
-  return 'NewAccount(email: ${_this.email}, firstName: ${_this.firstName}, lastName: ${_this.lastName}, phone: ${_this.phone}, password: ${_this.password})';
+  return 'NewAccount(email: ${_this.email}, firstName: ${_this.firstName}, lastName: ${_this.lastName}, phone: ${_this.phone}, password: ${_this.password}, termsVersion: ${_this.termsVersion})';
 }
 
 
@@ -51,7 +51,7 @@ abstract mixin class $NewAccountCopyWith<$Res>  {
   factory $NewAccountCopyWith(NewAccount value, $Res Function(NewAccount) _then) = _$NewAccountCopyWithImpl;
 @useResult
 $Res call({
- String email, String firstName, String lastName, String phone, String password
+ String email, String firstName, String lastName, String phone, String password, String termsVersion
 });
 
 
@@ -68,13 +68,14 @@ class _$NewAccountCopyWithImpl<$Res>
 
 /// Create a copy of NewAccount
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? email = null,Object? firstName = null,Object? lastName = null,Object? phone = null,Object? password = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? email = null,Object? firstName = null,Object? lastName = null,Object? phone = null,Object? password = null,Object? termsVersion = null,}) {
   return _then(NewAccount(
 email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,firstName: null == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
 as String,lastName: null == lastName ? _self.lastName : lastName // ignore: cast_nullable_to_non_nullable
 as String,phone: null == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
 as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
+as String,termsVersion: null == termsVersion ? _self.termsVersion : termsVersion // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -160,10 +161,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String email,  String firstName,  String lastName,  String phone,  String password)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String email,  String firstName,  String lastName,  String phone,  String password,  String termsVersion)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _NewAccount() when $default != null:
-return $default(_that.email,_that.firstName,_that.lastName,_that.phone,_that.password);case _:
+return $default(_that.email,_that.firstName,_that.lastName,_that.phone,_that.password,_that.termsVersion);case _:
   return orElse();
 
 }
@@ -181,10 +182,10 @@ return $default(_that.email,_that.firstName,_that.lastName,_that.phone,_that.pas
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String email,  String firstName,  String lastName,  String phone,  String password)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String email,  String firstName,  String lastName,  String phone,  String password,  String termsVersion)  $default,) {final _that = this;
 switch (_that) {
 case _NewAccount():
-return $default(_that.email,_that.firstName,_that.lastName,_that.phone,_that.password);case _:
+return $default(_that.email,_that.firstName,_that.lastName,_that.phone,_that.password,_that.termsVersion);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +202,10 @@ return $default(_that.email,_that.firstName,_that.lastName,_that.phone,_that.pas
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String email,  String firstName,  String lastName,  String phone,  String password)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String email,  String firstName,  String lastName,  String phone,  String password,  String termsVersion)?  $default,) {final _that = this;
 switch (_that) {
 case _NewAccount() when $default != null:
-return $default(_that.email,_that.firstName,_that.lastName,_that.phone,_that.password);case _:
+return $default(_that.email,_that.firstName,_that.lastName,_that.phone,_that.password,_that.termsVersion);case _:
   return null;
 
 }
@@ -216,7 +217,7 @@ return $default(_that.email,_that.firstName,_that.lastName,_that.phone,_that.pas
 
 
 class _NewAccount implements NewAccount {
-  const _NewAccount({required this.email, required this.firstName, required this.lastName, required this.phone, required this.password});
+  const _NewAccount({required this.email, required this.firstName, required this.lastName, required this.phone, required this.password, required this.termsVersion});
   
 
 @override final  String email;
@@ -224,6 +225,7 @@ class _NewAccount implements NewAccount {
 @override final  String lastName;
 @override final  String phone;
 @override final  String password;
+@override final  String termsVersion;
 
 /// Create a copy of NewAccount
 /// with the given fields replaced by the non-null parameter values.
@@ -235,18 +237,18 @@ _$NewAccountCopyWith<_NewAccount> get copyWith => __$NewAccountCopyWithImpl<_New
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _NewAccount&&(identical(other.email, email) || other.email == email)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.password, password) || other.password == password));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _NewAccount&&(identical(other.email, email) || other.email == email)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.password, password) || other.password == password)&&(identical(other.termsVersion, termsVersion) || other.termsVersion == termsVersion));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,email,firstName,lastName,phone,password);
+    return Object.hash(runtimeType,email,firstName,lastName,phone,password,termsVersion);
 }
 
 @override
 String toString() {
-    return 'NewAccount(email: $email, firstName: $firstName, lastName: $lastName, phone: $phone, password: $password)';
+    return 'NewAccount(email: $email, firstName: $firstName, lastName: $lastName, phone: $phone, password: $password, termsVersion: $termsVersion)';
 }
 
 
@@ -257,7 +259,7 @@ abstract mixin class _$NewAccountCopyWith<$Res> implements $NewAccountCopyWith<$
   factory _$NewAccountCopyWith(_NewAccount value, $Res Function(_NewAccount) _then) = __$NewAccountCopyWithImpl;
 @override @useResult
 $Res call({
- String email, String firstName, String lastName, String phone, String password
+ String email, String firstName, String lastName, String phone, String password, String termsVersion
 });
 
 
@@ -274,13 +276,14 @@ class __$NewAccountCopyWithImpl<$Res>
 
 /// Create a copy of NewAccount
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? email = null,Object? firstName = null,Object? lastName = null,Object? phone = null,Object? password = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? email = null,Object? firstName = null,Object? lastName = null,Object? phone = null,Object? password = null,Object? termsVersion = null,}) {
   return _then(_NewAccount(
 email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,firstName: null == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
 as String,lastName: null == lastName ? _self.lastName : lastName // ignore: cast_nullable_to_non_nullable
 as String,phone: null == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
 as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
+as String,termsVersion: null == termsVersion ? _self.termsVersion : termsVersion // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

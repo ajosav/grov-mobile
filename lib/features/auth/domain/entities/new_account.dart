@@ -12,5 +12,6 @@ abstract class NewAccount with _$NewAccount {
     required String lastName,
     required String phone,
     required String password,
+    required String termsVersion,
   }) = _NewAccount;
 }

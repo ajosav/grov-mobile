@@ -14,7 +14,9 @@ import 'package:app_mobile/features/session/domain/entities/session.dart';
 class FakeAuthRepository() implements AuthRepository {
   Result<AccountLookup> lookupResult = const Result.err(UnknownFailure());
   Result<PasswordCheck> checkResult = const Result.ok(PasswordCheck(ok: true));
+  Result<String> termsVersionResult = const Result.ok('terms-test');
   Result<AuthOutcome> signUpResult = const Result.err(UnknownFailure());
+  NewAccount? lastSignUp;
   Result<AuthOutcome> logInResult = const Result.err(UnknownFailure());
   Result<AuthOutcome> verifyResult = const Result.err(UnknownFailure());
   Result<OtpChallenge> resendResult = const Result.err(UnknownFailure());
@@ -42,8 +44,15 @@ class FakeAuthRepository() implements AuthRepository {
   }
 
   @override
+  Future<Result<String>> getTermsVersion() async {
+    calls.add('getTermsVersion');
+    return termsVersionResult;
+  }
+
+  @override
   Future<Result<AuthOutcome>> signUp(NewAccount account) async {
     calls.add('signUp:${account.phone}');
+    lastSignUp = account;
     return signUpResult;
   }
 

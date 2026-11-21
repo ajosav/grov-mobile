@@ -340,6 +340,18 @@ abstract class AppLocalizations {
   /// **'Privacy Policy'**
   String get authPrivacyLink;
 
+  /// No description provided for @authTermsAcceptance.
+  ///
+  /// In en, this message translates to:
+  /// **'I agree to the Terms and Conditions.'**
+  String get authTermsAcceptance;
+
+  /// No description provided for @authTermsLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking the current terms…'**
+  String get authTermsLoading;
+
   /// No description provided for @authGoogleLabel.
   ///
   /// In en, this message translates to:
@@ -823,8 +835,278 @@ abstract class AppLocalizations {
   /// No description provided for @errorTermsStale.
   ///
   /// In en, this message translates to:
-  /// **'The terms have changed. Update the app to continue.'**
+  /// **'The terms have changed. Refresh them and agree to continue.'**
   String get errorTermsStale;
+
+  /// No description provided for @errorPhoneAlreadySet.
+  ///
+  /// In en, this message translates to:
+  /// **'This account already has a phone number. You can change it in settings.'**
+  String get errorPhoneAlreadySet;
+
+  /// No description provided for @errorEmailAlreadyVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Your email is already confirmed. Sign in again to carry on.'**
+  String get errorEmailAlreadyVerified;
+
+  /// No description provided for @errorEmailChangeNotStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask for a code to your new email first.'**
+  String get errorEmailChangeNotStarted;
+
+  /// No description provided for @homeGreetingMorning.
+  ///
+  /// In en, this message translates to:
+  /// **'Good morning, {name}'**
+  String homeGreetingMorning(String name);
+
+  /// No description provided for @homeGreetingAfternoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Good afternoon, {name}'**
+  String homeGreetingAfternoon(String name);
+
+  /// No description provided for @homeGreetingEvening.
+  ///
+  /// In en, this message translates to:
+  /// **'Good evening, {name}'**
+  String homeGreetingEvening(String name);
+
+  /// No description provided for @homeEncouragement.
+  ///
+  /// In en, this message translates to:
+  /// **'You’re making great progress!'**
+  String get homeEncouragement;
+
+  /// No description provided for @homeNotificationsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get homeNotificationsLabel;
+
+  /// No description provided for @homeWeekProgressTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This week’s progress'**
+  String get homeWeekProgressTitle;
+
+  /// No description provided for @homeBudgetUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget used'**
+  String get homeBudgetUsed;
+
+  /// No description provided for @homeBudgetPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}%'**
+  String homeBudgetPercent(int percent);
+
+  /// No description provided for @homeMealsCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Meals completed'**
+  String get homeMealsCompleted;
+
+  /// No description provided for @homeMealsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} / {total}'**
+  String homeMealsCount(int done, int total);
+
+  /// No description provided for @homeMealIdeasTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Today’s meal ideas'**
+  String get homeMealIdeasTitle;
+
+  /// No description provided for @homeViewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View all'**
+  String get homeViewAll;
+
+  /// No description provided for @mealTimeBreakfast.
+  ///
+  /// In en, this message translates to:
+  /// **'Breakfast'**
+  String get mealTimeBreakfast;
+
+  /// No description provided for @mealTimeLunch.
+  ///
+  /// In en, this message translates to:
+  /// **'Lunch'**
+  String get mealTimeLunch;
+
+  /// No description provided for @mealTimeDinner.
+  ///
+  /// In en, this message translates to:
+  /// **'Dinner'**
+  String get mealTimeDinner;
+
+  /// No description provided for @mealTimeSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Snack'**
+  String get mealTimeSnack;
+
+  /// No description provided for @homeMealSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{mealTime} · meal idea'**
+  String homeMealSubtitle(String mealTime);
+
+  /// No description provided for @homeCooked.
+  ///
+  /// In en, this message translates to:
+  /// **'Cooked'**
+  String get homeCooked;
+
+  /// No description provided for @homeStockListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock list'**
+  String get homeStockListTitle;
+
+  /// No description provided for @homeStockListSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 item still to buy} other{{count} items still to buy}} · {amount}'**
+  String homeStockListSummary(int count, String amount);
+
+  /// No description provided for @homeQuickActionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick actions'**
+  String get homeQuickActionsTitle;
+
+  /// No description provided for @homeActionViewPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'View plan'**
+  String get homeActionViewPlan;
+
+  /// No description provided for @homeActionBulkCooked.
+  ///
+  /// In en, this message translates to:
+  /// **'Bulk cooked food'**
+  String get homeActionBulkCooked;
+
+  /// No description provided for @homeActionSharingSlot.
+  ///
+  /// In en, this message translates to:
+  /// **'Book a sharing slot'**
+  String get homeActionSharingSlot;
+
+  /// No description provided for @homeActionAdjustBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjust budget'**
+  String get homeActionAdjustBudget;
+
+  /// No description provided for @homeLoadFailedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Home did not load'**
+  String get homeLoadFailedTitle;
+
+  /// No description provided for @homeLoadFailedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your connection and try again.'**
+  String get homeLoadFailedBody;
+
+  /// No description provided for @homeRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get homeRetry;
+
+  /// No description provided for @loadingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading'**
+  String get loadingLabel;
+
+  /// No description provided for @homeLoadingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading your home'**
+  String get homeLoadingLabel;
+
+  /// No description provided for @commonRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get commonRetry;
+
+  /// No description provided for @pagedLoadFailedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This did not load'**
+  String get pagedLoadFailedTitle;
+
+  /// No description provided for @pagedLoadFailedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your connection and try again.'**
+  String get pagedLoadFailedBody;
+
+  /// No description provided for @pagedLoadMoreFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load more.'**
+  String get pagedLoadMoreFailed;
+
+  /// No description provided for @authBusyChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking…'**
+  String get authBusyChecking;
+
+  /// No description provided for @authBusySigningIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Signing in…'**
+  String get authBusySigningIn;
+
+  /// No description provided for @authBusyCreating.
+  ///
+  /// In en, this message translates to:
+  /// **'Creating your account…'**
+  String get authBusyCreating;
+
+  /// No description provided for @authBusyVerifying.
+  ///
+  /// In en, this message translates to:
+  /// **'Verifying…'**
+  String get authBusyVerifying;
+
+  /// No description provided for @authBusySaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving…'**
+  String get authBusySaving;
+
+  /// No description provided for @authBusySending.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending…'**
+  String get authBusySending;
+
+  /// No description provided for @authLoadingLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking your link'**
+  String get authLoadingLink;
+
+  /// No description provided for @startingUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting up'**
+  String get startingUp;
 }
 
 class _AppLocalizationsDelegate

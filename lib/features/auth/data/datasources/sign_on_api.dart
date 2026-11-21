@@ -3,6 +3,7 @@ import 'package:retrofit/retrofit.dart';
 
 import '../../../../core/network/api_response.dart';
 import '../models/auth_response_model.dart';
+import '../models/client_config_model.dart';
 import '../models/forgot_accepted_model.dart';
 import '../models/lookup_response_model.dart';
 import '../models/password_check_model.dart';
@@ -15,6 +16,9 @@ part 'sign_on_api.g.dart';
 @RestApi()
 abstract class SignOnApi {
   factory SignOnApi(Dio dio, {String? baseUrl}) = _SignOnApi;
+
+  @GET('/v1/config')
+  Future<ApiResponse<ClientConfigModel>> getConfig();
 
   @POST('/v1/auth/lookup')
   Future<ApiResponse<LookupResponseModel>> lookup(

@@ -32,6 +32,8 @@ import '../../helpers/fake_auth_repository.dart';
 class _Sessions(this.stored) implements SessionRepository {
   Session? stored;
   @override
+  Future<Result<void>> revoke() async => const Result.ok(null);
+  @override
   Future<Result<Session?>> restore() async => Result.ok(stored);
   @override
   Future<Result<void>> save(Session s) async {
@@ -122,7 +124,8 @@ void main() {
       ..registerFactoryParam(
         (String token, void _) => resetPasswordCubitFor(_repo, token: token),
       )
-      ..registerFactory(() => phoneCubitFor(_repo));
+      ..registerFactory(() => phoneCubitFor(_repo))
+      ..registerFactory(homeCubitFor);
   });
   tearDown(getIt.reset);
 
@@ -185,12 +188,12 @@ void main() {
 
       await tester.tap(find.text('Not now'));
       await tester.pumpAndSettle();
-      expect(find.text('No plan yet'), findsOneWidget);
+      expect(find.text('This week’s progress'), findsOneWidget);
     });
 
     testWidgets('a clear session skips Welcome', (tester) async {
       await _pump(tester, stored: sessionWith(AuthGate.none));
-      expect(find.text('No plan yet'), findsOneWidget);
+      expect(find.text('This week’s progress'), findsOneWidget);
     });
   });
 
@@ -222,6 +225,12 @@ void main() {
       await _type(tester, 3, '0803 123 4567');
       await _type(tester, 4, 'Secret!123');
       await tester.pump(const Duration(milliseconds: 400));
+      expect(create().onPressed, isNull);
+
+      await tester.ensureVisible(find.byType(CheckboxListTile));
+      await tester.pump();
+      await tester.tap(find.byType(CheckboxListTile));
+      await tester.pump();
       expect(create().onPressed, isNotNull);
     });
 
@@ -267,7 +276,7 @@ void main() {
       await _type(tester, 1, 'Secret!123');
       await tester.tap(find.text('Log in'));
       await tester.pumpAndSettle();
-      expect(find.text('No plan yet'), findsOneWidget);
+      expect(find.text('This week’s progress'), findsOneWidget);
     });
 
     testWidgets('log-in with an unverified email lands on the code screen', (

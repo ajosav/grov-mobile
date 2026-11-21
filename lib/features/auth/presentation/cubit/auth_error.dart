@@ -22,6 +22,9 @@ enum AuthError() {
   linkExpired,
   linkUsed,
   termsStale,
+  phoneAlreadySet,
+  emailAlreadyVerified,
+  emailChangeNotStarted,
   unsupportedStep,
   unknown,
 }
@@ -37,6 +40,10 @@ AuthError authErrorOf(Failure failure) => switch (failure) {
   ConflictFailure(:final code) => switch (code) {
     'EMAIL_TAKEN' => AuthError.emailTaken,
     'PHONE_TAKEN' => AuthError.phoneTaken,
+    'AUTH_TERMS_VERSION_STALE' => AuthError.termsStale,
+    'PHONE_ALREADY_SET' => AuthError.phoneAlreadySet,
+    'EMAIL_ALREADY_VERIFIED' => AuthError.emailAlreadyVerified,
+    'EMAIL_CHANGE_NOT_STARTED' => AuthError.emailChangeNotStarted,
     _ => AuthError.unknown,
   },
   ValidationFailure(:final code) => switch (code) {

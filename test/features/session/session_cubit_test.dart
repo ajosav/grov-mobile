@@ -29,6 +29,7 @@ void main() {
     repo = _MockRepo();
     registerFallbackValue(_a);
     when(() => repo.clear()).thenAnswer((_) async => const Result.ok(null));
+    when(() => repo.revoke()).thenAnswer((_) async => const Result.ok(null));
     when(() => repo.save(any())).thenAnswer((_) async => const Result.ok(null));
   });
 
@@ -96,5 +97,40 @@ void main() {
     act: (c) async => expect(await c.refresh(), isNull),
     expect: () => <SessionState>[],
     verify: (_) => verifyNever(() => repo.clear()),
+  );
+
+  blocTest<SessionCubit, SessionState>(
+    'sign out tells the server first, then clears this device',
+    build: build,
+    seed: () => SessionState.signedIn(_a),
+    act: (c) => c.signOut(),
+    expect: () => [const SessionState.signedOut()],
+    verify: (_) => verifyInOrder([() => repo.revoke(), () => repo.clear()]),
+  );
+
+  blocTest<SessionCubit, SessionState>(
+    'sign out still works when the server cannot be reached',
+    setUp: () =>
+        when(() => repo.revoke())
+            .thenAnswer((_) async => const Result.err(OfflineFailure())),
+    build: build,
+    seed: () => SessionState.signedIn(_a),
+    act: (c) => c.signOut(),
+    expect: () => [const SessionState.signedOut()],
+    verify: (_) => verify(() => repo.clear()).called(1),
+  );
+
+  blocTest<SessionCubit, SessionState>(
+    'a session the server already ended is not revoked again',
+    setUp: () =>
+        when(() => repo.refresh(_a))
+            .thenAnswer((_) async => const Result.ok(null)),
+    build: build,
+    seed: () => SessionState.signedIn(_a),
+    act: (c) => c.refresh(),
+    verify: (_) {
+      verifyNever(() => repo.revoke());
+      verify(() => repo.clear()).called(1);
+    },
   );
 }

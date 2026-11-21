@@ -14,6 +14,9 @@ abstract class SignOnState with _$SignOnState {
     @Default('') String email,
     AccountLookup? lookup,
     @Default(false) bool busy,
+    String? termsVersion,
+    @Default(false) bool termsLoading,
+    @Default(false) bool termsAccepted,
     @Default(<PasswordProblem>{}) Set<PasswordProblem> passwordProblems,
 
     /// True once the server has confirmed the checklist (not just local rules).

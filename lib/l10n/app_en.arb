@@ -86,6 +86,8 @@
   },
   "authTermsLink": "Terms",
   "authPrivacyLink": "Privacy Policy",
+  "authTermsAcceptance": "I agree to the Terms and Conditions.",
+  "authTermsLoading": "Checking the current terms…",
   "authGoogleLabel": "Continue with Google",
   "authAppleLabel": "Continue with Apple",
   "authSocialSoon": "Signing in with Google or Apple is coming soon. Use your email for now.",
@@ -215,5 +217,105 @@
   "errorServer": "Something went wrong on our side. Try again.",
   "errorUnknown": "Something went wrong. Try again.",
   "errorUnsupportedStep": "This sign-in needs a step this version of the app can’t do yet.",
-  "errorTermsStale": "The terms have changed. Update the app to continue."
+  "errorTermsStale": "The terms have changed. Refresh them and agree to continue.",
+  "errorPhoneAlreadySet": "This account already has a phone number. You can change it in settings.",
+  "errorEmailAlreadyVerified": "Your email is already confirmed. Sign in again to carry on.",
+  "errorEmailChangeNotStarted": "Ask for a code to your new email first.",
+  "homeGreetingMorning": "Good morning, {name}",
+  "@homeGreetingMorning": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "homeGreetingAfternoon": "Good afternoon, {name}",
+  "@homeGreetingAfternoon": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "homeGreetingEvening": "Good evening, {name}",
+  "@homeGreetingEvening": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "homeEncouragement": "You’re making great progress!",
+  "homeNotificationsLabel": "Notifications",
+  "homeWeekProgressTitle": "This week’s progress",
+  "homeBudgetUsed": "Budget used",
+  "homeBudgetPercent": "{percent}%",
+  "@homeBudgetPercent": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "homeMealsCompleted": "Meals completed",
+  "homeMealsCount": "{done} / {total}",
+  "@homeMealsCount": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "homeMealIdeasTitle": "Today’s meal ideas",
+  "homeViewAll": "View all",
+  "mealTimeBreakfast": "Breakfast",
+  "mealTimeLunch": "Lunch",
+  "mealTimeDinner": "Dinner",
+  "mealTimeSnack": "Snack",
+  "homeMealSubtitle": "{mealTime} · meal idea",
+  "@homeMealSubtitle": {
+    "placeholders": {
+      "mealTime": {
+        "type": "String"
+      }
+    }
+  },
+  "homeCooked": "Cooked",
+  "homeStockListTitle": "Stock list",
+  "homeStockListSummary": "{count, plural, =1{1 item still to buy} other{{count} items still to buy}} · {amount}",
+  "@homeStockListSummary": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "homeQuickActionsTitle": "Quick actions",
+  "homeActionViewPlan": "View plan",
+  "homeActionBulkCooked": "Bulk cooked food",
+  "homeActionSharingSlot": "Book a sharing slot",
+  "homeActionAdjustBudget": "Adjust budget",
+  "homeLoadFailedTitle": "Home did not load",
+  "homeLoadFailedBody": "Check your connection and try again.",
+  "homeRetry": "Try again",
+  "loadingLabel": "Loading",
+  "homeLoadingLabel": "Loading your home",
+  "commonRetry": "Try again",
+  "pagedLoadFailedTitle": "This did not load",
+  "pagedLoadFailedBody": "Check your connection and try again.",
+  "pagedLoadMoreFailed": "Could not load more.",
+  "authBusyChecking": "Checking…",
+  "authBusySigningIn": "Signing in…",
+  "authBusyCreating": "Creating your account…",
+  "authBusyVerifying": "Verifying…",
+  "authBusySaving": "Saving…",
+  "authBusySending": "Sending…",
+  "authLoadingLink": "Checking your link",
+  "startingUp": "Starting up"
 }

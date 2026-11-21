@@ -91,6 +91,7 @@ class _ForgotPasswordViewState() extends State<ForgotPasswordView> {
               AppButton(
                 label: l10n.forgotSend,
                 loading: state.busy,
+                loadingLabel: l10n.authBusySending,
                 onPressed: cubit.send,
               ),
               Center(child: AuthLink(l10n.forgotBack, onTap: context.pop)),

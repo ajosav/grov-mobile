@@ -19,6 +19,7 @@ import '../../features/auth/presentation/cubit/email_code_cubit.dart';
 import '../../features/auth/presentation/cubit/forgot_password_cubit.dart';
 import '../../features/auth/presentation/cubit/phone_cubit.dart';
 import '../../features/auth/presentation/cubit/reset_password_cubit.dart';
+import '../../features/home/presentation/cubit/home_cubit.dart';
 import '../../features/home/presentation/pages/home_page.dart';
 import '../../features/session/domain/entities/auth_gate.dart';
 import '../../features/session/presentation/pages/splash_page.dart';
@@ -121,7 +122,13 @@ GoRouter buildRouter(SessionCubit session) {
         branches: [
           StatefulShellBranch(
             routes: [
-              GoRoute(path: Routes.home, builder: (_, _) => const HomeView()),
+              GoRoute(
+                path: Routes.home,
+                builder: (_, _) => BlocProvider(
+                  create: (_) => getIt<HomeCubit>()..load(),
+                  child: const HomeView(),
+                ),
+              ),
             ],
           ),
           StatefulShellBranch(

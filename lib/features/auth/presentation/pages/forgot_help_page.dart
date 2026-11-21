@@ -56,6 +56,7 @@ class const ForgotHelpView({super.key}) extends StatelessWidget {
             AppButton(
               label: l10n.helpSendAgain,
               loading: state.busy,
+              loadingLabel: l10n.authBusySending,
               onPressed: () async {
                 await cubit.send();
                 if (context.mounted && cubit.state.error == null) {

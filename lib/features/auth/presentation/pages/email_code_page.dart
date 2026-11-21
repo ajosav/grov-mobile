@@ -110,6 +110,9 @@ class const EmailCodeView({super.key}) extends StatelessWidget {
             label: locked ? l10n.codeSendNew : l10n.authContinue,
             loading:
                 state.status == EmailCodeStatus.verifying || state.resending,
+            loadingLabel: state.resending
+                ? l10n.authBusySending
+                : l10n.authBusyVerifying,
             onPressed: accepted
                 ? () => session.signedIn(state.verifiedSession!)
                 : locked

@@ -105,6 +105,7 @@ class _PasswordViewState() extends State<PasswordView> {
             builder: (context, _) => AppButton(
               label: l10n.authLogIn,
               loading: state.busy,
+              loadingLabel: l10n.authBusySigningIn,
               onPressed: _password.text.isEmpty
                   ? null
                   : () => cubit.logIn(_password.text),

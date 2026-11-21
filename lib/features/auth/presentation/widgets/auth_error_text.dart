@@ -23,6 +23,9 @@ extension AuthErrorText on AuthError {
     AuthError.resendTooSoon => l10n.errorServer,
     AuthError.linkExpired || AuthError.linkUsed => l10n.linkExpiredBody,
     AuthError.termsStale => l10n.errorTermsStale,
+    AuthError.phoneAlreadySet => l10n.errorPhoneAlreadySet,
+    AuthError.emailAlreadyVerified => l10n.errorEmailAlreadyVerified,
+    AuthError.emailChangeNotStarted => l10n.errorEmailChangeNotStarted,
     AuthError.unsupportedStep => l10n.errorUnsupportedStep,
     AuthError.unknown => l10n.errorUnknown,
   };

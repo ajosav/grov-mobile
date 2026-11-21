@@ -9,17 +9,8 @@ import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_remote_data_source.dart';
 
 class const AuthRepositoryImpl(
-  final AuthRemoteDataSource _remote, {
-
-  /// The terms version the person agrees to on the sign-up button. The server
-  /// refuses a stale one (`AUTH_TERMS_VERSION_STALE`).
-  final String termsVersion = currentTermsVersion,
-}) implements AuthRepository {
-  /// Placeholder until the real terms version is published by the backend.
-  static const currentTermsVersion = String.fromEnvironment(
-    'TERMS_VERSION',
-    defaultValue: '2026-10-01',
-  );
+  final AuthRemoteDataSource _remote,
+) implements AuthRepository {
 
   @override
   Future<Result<AccountLookup>> lookup(String email) =>
@@ -32,6 +23,10 @@ class const AuthRepositoryImpl(
   }) => _map(() => _remote.checkPassword(password, email), (m) => m.toEntity());
 
   @override
+  Future<Result<String>> getTermsVersion() =>
+      _map(() => _remote.getConfig(), (config) => config.termsVersion);
+
+  @override
   Future<Result<AuthOutcome>> signUp(NewAccount account) => _map(
     () => _remote.signUp(
       email: account.email,
@@ -39,7 +34,7 @@ class const AuthRepositoryImpl(
       lastName: account.lastName,
       phone: account.phone,
       password: account.password,
-      termsVersion: termsVersion,
+      termsVersion: account.termsVersion,
     ),
     (m) => m.toEntity(),
   );

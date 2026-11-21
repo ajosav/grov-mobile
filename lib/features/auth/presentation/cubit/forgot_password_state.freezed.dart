@@ -15,8 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ForgotPasswordState {
 
- String get email; bool get busy; AuthError? get error; DateTime? get nextSendAt;/// The server accepted the request: show "Check your email".
- bool get sent;
+ String get email; bool get busy; AuthError? get error; DateTime? get nextSendAt; bool get sent;
 /// Create a copy of ForgotPasswordState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -224,7 +223,6 @@ class _ForgotPasswordState implements ForgotPasswordState {
 @override@JsonKey() final  bool busy;
 @override final  AuthError? error;
 @override final  DateTime? nextSendAt;
-/// The server accepted the request: show "Check your email".
 @override@JsonKey() final  bool sent;
 
 /// Create a copy of ForgotPasswordState

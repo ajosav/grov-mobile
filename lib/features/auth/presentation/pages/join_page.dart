@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../../../core/theme/app_tokens.dart' hide formatNaira;
 import '../../../../core/widgets/app_button.dart';
+import '../../../../core/widgets/app_progress.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/entities/password_problem.dart';
 import '../cubit/auth_error.dart';
@@ -40,6 +41,7 @@ class _JoinViewState() extends State<JoinView> {
     _email = TextEditingController(
       text: context.read<SignOnCubit>().state.email,
     );
+    context.read<SignOnCubit>().loadTermsVersion();
   }
 
   @override
@@ -71,9 +73,14 @@ class _JoinViewState() extends State<JoinView> {
           a.busy != b.busy ||
           a.error != b.error ||
           a.passwordProblems != b.passwordProblems ||
-          a.passwordServerChecked != b.passwordServerChecked,
+          a.passwordServerChecked != b.passwordServerChecked ||
+          a.termsVersion != b.termsVersion ||
+          a.termsLoading != b.termsLoading ||
+          a.termsAccepted != b.termsAccepted,
       builder: (context, state) {
         final error = state.error;
+        final termsError =
+            state.termsVersion == null && !state.termsLoading ? error : null;
         final phoneError =
             error == AuthError.phoneTaken || error == AuthError.phoneInvalid;
         final commonFailed =
@@ -85,6 +92,7 @@ class _JoinViewState() extends State<JoinView> {
           AuthError.emailTaken ||
           AuthError.phoneTaken ||
           AuthError.phoneInvalid ||
+          AuthError.termsStale ||
           AuthError.passwordCommon => null,
           _ => error,
         };
@@ -172,6 +180,44 @@ class _JoinViewState() extends State<JoinView> {
                   serverChecked: state.passwordServerChecked,
                 ),
               ),
+              if (state.termsLoading)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  spacing: AppSpace.s2,
+                  children: [
+                    AppProgress(
+                      size: 18,
+                      semanticLabel: l10n.authTermsLoading,
+                    ),
+                    Flexible(
+                      child: Text(
+                        l10n.authTermsLoading,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ),
+                  ],
+                ),
+              CheckboxListTile(
+                contentPadding: EdgeInsets.zero,
+                controlAffinity: ListTileControlAffinity.leading,
+                value: state.termsAccepted,
+                onChanged: state.termsVersion == null || state.termsLoading
+                    ? null
+                    : (accepted) =>
+                          cubit.setTermsAccepted(accepted ?? false),
+                title: Text(l10n.authTermsAcceptance),
+              ),
+              if (termsError != null)
+                AuthBanner(
+                  termsError.message(l10n),
+                  kind:
+                      termsError == AuthError.offline ||
+                          termsError == AuthError.timeout
+                      ? AuthBannerKind.info
+                      : AuthBannerKind.danger,
+                  actionLabel: l10n.authTryAgain,
+                  onAction: cubit.loadTermsVersion,
+                ),
               if (banner != null) AuthErrorBanner(banner),
             ],
           ),
@@ -182,11 +228,15 @@ class _JoinViewState() extends State<JoinView> {
                   _firstName.text.trim().isNotEmpty &&
                   _phone.text.trim().isNotEmpty &&
                   _password.text.isNotEmpty &&
+                  state.termsVersion != null &&
+                  state.termsAccepted &&
+                  !state.termsLoading &&
                   !state.passwordProblems.contains(PasswordProblem.tooShort) &&
                   !state.passwordProblems.contains(PasswordProblem.noSymbol);
               return AppButton(
                 label: l10n.authCreateAccount,
                 loading: state.busy,
+                loadingLabel: l10n.authBusyCreating,
                 onPressed: ready ? _submit : null,
               );
             },

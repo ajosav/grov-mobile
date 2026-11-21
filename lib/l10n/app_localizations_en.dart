@@ -146,6 +146,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authPrivacyLink => 'Privacy Policy';
 
   @override
+  String get authTermsAcceptance => 'I agree to the Terms and Conditions.';
+
+  @override
+  String get authTermsLoading => 'Checking the current terms…';
+
+  @override
   String get authGoogleLabel => 'Continue with Google';
 
   @override
@@ -414,5 +420,163 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorTermsStale =>
-      'The terms have changed. Update the app to continue.';
+      'The terms have changed. Refresh them and agree to continue.';
+
+  @override
+  String get errorPhoneAlreadySet =>
+      'This account already has a phone number. You can change it in settings.';
+
+  @override
+  String get errorEmailAlreadyVerified =>
+      'Your email is already confirmed. Sign in again to carry on.';
+
+  @override
+  String get errorEmailChangeNotStarted =>
+      'Ask for a code to your new email first.';
+
+  @override
+  String homeGreetingMorning(String name) {
+    return 'Good morning, $name';
+  }
+
+  @override
+  String homeGreetingAfternoon(String name) {
+    return 'Good afternoon, $name';
+  }
+
+  @override
+  String homeGreetingEvening(String name) {
+    return 'Good evening, $name';
+  }
+
+  @override
+  String get homeEncouragement => 'You’re making great progress!';
+
+  @override
+  String get homeNotificationsLabel => 'Notifications';
+
+  @override
+  String get homeWeekProgressTitle => 'This week’s progress';
+
+  @override
+  String get homeBudgetUsed => 'Budget used';
+
+  @override
+  String homeBudgetPercent(int percent) {
+    return '$percent%';
+  }
+
+  @override
+  String get homeMealsCompleted => 'Meals completed';
+
+  @override
+  String homeMealsCount(int done, int total) {
+    return '$done / $total';
+  }
+
+  @override
+  String get homeMealIdeasTitle => 'Today’s meal ideas';
+
+  @override
+  String get homeViewAll => 'View all';
+
+  @override
+  String get mealTimeBreakfast => 'Breakfast';
+
+  @override
+  String get mealTimeLunch => 'Lunch';
+
+  @override
+  String get mealTimeDinner => 'Dinner';
+
+  @override
+  String get mealTimeSnack => 'Snack';
+
+  @override
+  String homeMealSubtitle(String mealTime) {
+    return '$mealTime · meal idea';
+  }
+
+  @override
+  String get homeCooked => 'Cooked';
+
+  @override
+  String get homeStockListTitle => 'Stock list';
+
+  @override
+  String homeStockListSummary(int count, String amount) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items still to buy',
+      one: '1 item still to buy',
+    );
+    return '$_temp0 · $amount';
+  }
+
+  @override
+  String get homeQuickActionsTitle => 'Quick actions';
+
+  @override
+  String get homeActionViewPlan => 'View plan';
+
+  @override
+  String get homeActionBulkCooked => 'Bulk cooked food';
+
+  @override
+  String get homeActionSharingSlot => 'Book a sharing slot';
+
+  @override
+  String get homeActionAdjustBudget => 'Adjust budget';
+
+  @override
+  String get homeLoadFailedTitle => 'Home did not load';
+
+  @override
+  String get homeLoadFailedBody => 'Check your connection and try again.';
+
+  @override
+  String get homeRetry => 'Try again';
+
+  @override
+  String get loadingLabel => 'Loading';
+
+  @override
+  String get homeLoadingLabel => 'Loading your home';
+
+  @override
+  String get commonRetry => 'Try again';
+
+  @override
+  String get pagedLoadFailedTitle => 'This did not load';
+
+  @override
+  String get pagedLoadFailedBody => 'Check your connection and try again.';
+
+  @override
+  String get pagedLoadMoreFailed => 'Could not load more.';
+
+  @override
+  String get authBusyChecking => 'Checking…';
+
+  @override
+  String get authBusySigningIn => 'Signing in…';
+
+  @override
+  String get authBusyCreating => 'Creating your account…';
+
+  @override
+  String get authBusyVerifying => 'Verifying…';
+
+  @override
+  String get authBusySaving => 'Saving…';
+
+  @override
+  String get authBusySending => 'Sending…';
+
+  @override
+  String get authLoadingLink => 'Checking your link';
+
+  @override
+  String get startingUp => 'Starting up';
 }
