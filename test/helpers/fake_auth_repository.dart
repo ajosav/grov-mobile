@@ -1,10 +1,10 @@
 import 'package:app_mobile/core/error/failure.dart';
 import 'package:app_mobile/core/error/result.dart';
-import 'package:app_mobile/features/auth/domain/entities/account_lookup.dart';
 import 'package:app_mobile/features/auth/domain/entities/auth_outcome.dart';
-import 'package:app_mobile/features/auth/domain/entities/new_account.dart';
+import 'package:app_mobile/features/auth/domain/entities/code_verification.dart';
+import 'package:app_mobile/features/auth/domain/entities/new_profile.dart';
 import 'package:app_mobile/features/auth/domain/entities/otp_challenge.dart';
-import 'package:app_mobile/features/auth/domain/entities/password_check.dart';
+import 'package:app_mobile/features/auth/domain/entities/registration_ticket.dart';
 import 'package:app_mobile/features/auth/domain/repositories/auth_repository.dart';
 import 'package:app_mobile/features/session/domain/entities/auth_gate.dart';
 import 'package:app_mobile/features/session/domain/entities/session.dart';
@@ -12,36 +12,16 @@ import 'package:app_mobile/features/session/domain/entities/session.dart';
 /// A scriptable [AuthRepository]. Set the field for the call under test; an
 /// unset call answers with an unknown failure so a forgotten stub is loud.
 class FakeAuthRepository() implements AuthRepository {
-  Result<AccountLookup> lookupResult = const Result.err(UnknownFailure());
-  Result<PasswordCheck> checkResult = const Result.ok(PasswordCheck(ok: true));
   Result<String> termsVersionResult = const Result.ok('terms-test');
-  Result<AuthOutcome> signUpResult = const Result.err(UnknownFailure());
-  NewAccount? lastSignUp;
-  Result<AuthOutcome> logInResult = const Result.err(UnknownFailure());
-  Result<AuthOutcome> verifyResult = const Result.err(UnknownFailure());
-  Result<OtpChallenge> resendResult = const Result.err(UnknownFailure());
-  Result<OtpChallenge> changeEmailResult = const Result.err(UnknownFailure());
-  Result<DateTime> forgotResult = const Result.err(UnknownFailure());
-  Result<bool> resetCheckResult = const Result.ok(true);
-  Result<AuthOutcome> resetResult = const Result.err(UnknownFailure());
+  Result<OtpChallenge> requestCodeResult = const Result.err(UnknownFailure());
+  Result<CodeVerification> verifyResult = const Result.err(UnknownFailure());
+  Result<AuthOutcome> completeProfileResult = const Result.err(
+    UnknownFailure(),
+  );
+  NewProfile? lastProfile;
   Result<AuthOutcome> phoneResult = const Result.err(UnknownFailure());
 
   final calls = <String>[];
-
-  @override
-  Future<Result<AccountLookup>> lookup(String email) async {
-    calls.add('lookup:$email');
-    return lookupResult;
-  }
-
-  @override
-  Future<Result<PasswordCheck>> checkPassword(
-    String password, {
-    String? email,
-  }) async {
-    calls.add('checkPassword');
-    return checkResult;
-  }
 
   @override
   Future<Result<String>> getTermsVersion() async {
@@ -50,55 +30,25 @@ class FakeAuthRepository() implements AuthRepository {
   }
 
   @override
-  Future<Result<AuthOutcome>> signUp(NewAccount account) async {
-    calls.add('signUp:${account.phone}');
-    lastSignUp = account;
-    return signUpResult;
+  Future<Result<OtpChallenge>> requestCode(String email) async {
+    calls.add('requestCode:$email');
+    return requestCodeResult;
   }
 
   @override
-  Future<Result<AuthOutcome>> logIn(String email, String password) async {
-    calls.add('logIn:$email');
-    return logInResult;
-  }
-
-  @override
-  Future<Result<AuthOutcome>> verifyEmail(String code) async {
-    calls.add('verifyEmail:$code');
+  Future<Result<CodeVerification>> verifyCode(
+    String email,
+    String code,
+  ) async {
+    calls.add('verifyCode:$email:$code');
     return verifyResult;
   }
 
   @override
-  Future<Result<OtpChallenge>> resendEmailCode() async {
-    calls.add('resend');
-    return resendResult;
-  }
-
-  @override
-  Future<Result<OtpChallenge>> changeEmailAddress(String newEmail) async {
-    calls.add('changeEmail:$newEmail');
-    return changeEmailResult;
-  }
-
-  @override
-  Future<Result<DateTime>> requestPasswordReset(String email) async {
-    calls.add('forgot:$email');
-    return forgotResult;
-  }
-
-  @override
-  Future<Result<bool>> checkResetLink(String token) async {
-    calls.add('resetCheck');
-    return resetCheckResult;
-  }
-
-  @override
-  Future<Result<AuthOutcome>> resetPassword(
-    String token,
-    String password,
-  ) async {
-    calls.add('reset');
-    return resetResult;
+  Future<Result<AuthOutcome>> completeProfile(NewProfile profile) async {
+    calls.add('completeProfile:${profile.phone}');
+    lastProfile = profile;
+    return completeProfileResult;
   }
 
   @override
@@ -122,3 +72,20 @@ AuthOutcome outcomeWith(AuthGate gate, {OtpChallenge? challenge}) =>
 
 /// An answer with no session: the server wants a step the app cannot do.
 const outcomeNoSession = AuthOutcome();
+
+/// A right code for an existing account.
+CodeVerification signedInWith(AuthGate gate) =>
+    CodeVerification.signedIn(outcomeWith(gate));
+
+/// A right code for a new address.
+CodeVerification profileRequired() => CodeVerification.profileRequired(
+  RegistrationTicket(
+    ticket: 'ticket-of-a-new-address',
+    expiresAt: DateTime.utc(2030),
+  ),
+);
+
+OtpChallenge challengeAt(DateTime next) => OtpChallenge(
+  expiresAt: next.add(const Duration(minutes: 9)),
+  nextSendAt: next,
+);

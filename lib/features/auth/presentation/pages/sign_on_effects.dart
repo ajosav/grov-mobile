@@ -15,14 +15,11 @@ void handleSignOnEffect(BuildContext context, SignOnState state) {
   if (effect == null || !(ModalRoute.of(context)?.isCurrent ?? false)) {
     return;
   }
-  final onJoin = GoRouterState.of(context).uri.path == Routes.join;
   switch (effect) {
-    case SignOnToPassword():
-      onJoin
-          ? context.pushReplacement(Routes.password)
-          : context.push(Routes.password);
-    case SignOnToJoin():
-      context.push(Routes.join);
+    case SignOnToCode():
+      // `go`, not `push`: the router decides what a signed-in session on the
+      // code screen sees next ("You're in"), and it reads this location.
+      context.go(Routes.code);
     case SignOnSignedIn(:final session):
       // The router redirects to the gate screen or Home once this saves. The
       // button stays busy until then, so it is acknowledged afterwards.

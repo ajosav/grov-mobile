@@ -1,12 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'forgot_accepted_model.dart';
+part of 'registration_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-ForgotAcceptedModel _$ForgotAcceptedModelFromJson(Map<String, dynamic> json) =>
-    ForgotAcceptedModel(
-      nextSendAt: DateTime.parse(json['nextSendAt'] as String),
+RegistrationModel _$RegistrationModelFromJson(Map<String, dynamic> json) =>
+    RegistrationModel(
+      ticket: json['ticket'] as String,
+      expiresAt: DateTime.parse(json['expiresAt'] as String),
     );

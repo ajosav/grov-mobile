@@ -1,20 +1,11 @@
 import 'package:app_mobile/features/auth/domain/repositories/auth_repository.dart';
-import 'package:app_mobile/features/auth/domain/usecases/change_email_address.dart';
-import 'package:app_mobile/features/auth/domain/usecases/check_password.dart';
-import 'package:app_mobile/features/auth/domain/usecases/check_reset_link.dart';
 import 'package:app_mobile/features/auth/domain/usecases/complete_phone.dart';
+import 'package:app_mobile/features/auth/domain/usecases/complete_profile.dart';
 import 'package:app_mobile/features/auth/domain/usecases/get_terms_version.dart';
-import 'package:app_mobile/features/auth/domain/usecases/log_in.dart';
-import 'package:app_mobile/features/auth/domain/usecases/lookup_account.dart';
-import 'package:app_mobile/features/auth/domain/usecases/request_password_reset.dart';
-import 'package:app_mobile/features/auth/domain/usecases/resend_email_code.dart';
-import 'package:app_mobile/features/auth/domain/usecases/reset_password.dart';
-import 'package:app_mobile/features/auth/domain/usecases/sign_up.dart';
-import 'package:app_mobile/features/auth/domain/usecases/verify_email.dart';
+import 'package:app_mobile/features/auth/domain/usecases/request_sign_in_code.dart';
+import 'package:app_mobile/features/auth/domain/usecases/verify_sign_in_code.dart';
 import 'package:app_mobile/features/auth/presentation/cubit/email_code_cubit.dart';
-import 'package:app_mobile/features/auth/presentation/cubit/forgot_password_cubit.dart';
 import 'package:app_mobile/features/auth/presentation/cubit/phone_cubit.dart';
-import 'package:app_mobile/features/auth/presentation/cubit/reset_password_cubit.dart';
 import 'package:app_mobile/features/auth/presentation/cubit/sign_on_cubit.dart';
 import 'package:app_mobile/core/platform/clock.dart';
 import 'package:app_mobile/features/home/data/repositories/fixture_home_repository.dart';
@@ -63,11 +54,9 @@ SyncStatusCubit syncStatusCubitFor(SyncRepository repo) => SyncStatusCubit(
 );
 
 SignOnCubit signOnCubitFor(AuthRepository repo) => SignOnCubit(
-  lookupAccount: LookupAccount(repo),
-  logIn: LogIn(repo),
-  signUp: SignUp(repo),
+  requestCode: RequestSignInCode(repo),
+  completeProfile: CompleteProfile(repo),
   getTermsVersion: GetTermsVersion(repo),
-  checkPassword: CheckPassword(repo),
 );
 
 EmailCodeCubit emailCodeCubitFor(
@@ -75,26 +64,10 @@ EmailCodeCubit emailCodeCubitFor(
   String email = 'ngozi@example.com',
   DateTime? nextSendAt,
 }) => EmailCodeCubit(
-  verifyEmail: VerifyEmail(repo),
-  resendEmailCode: ResendEmailCode(repo),
-  changeEmailAddress: ChangeEmailAddress(repo),
+  verifyCode: VerifySignInCode(repo),
+  requestCode: RequestSignInCode(repo),
   email: email,
   nextSendAt: nextSendAt,
-);
-
-ForgotPasswordCubit forgotPasswordCubitFor(
-  AuthRepository repo, {
-  String email = '',
-}) => ForgotPasswordCubit(RequestPasswordReset(repo), email: email);
-
-ResetPasswordCubit resetPasswordCubitFor(
-  AuthRepository repo, {
-  String token = 'a-reset-token-of-at-least-20-chars',
-}) => ResetPasswordCubit(
-  checkResetLink: CheckResetLink(repo),
-  resetPassword: ResetPassword(repo),
-  checkPassword: CheckPassword(repo),
-  token: token,
 );
 
 PhoneCubit phoneCubitFor(AuthRepository repo) =>

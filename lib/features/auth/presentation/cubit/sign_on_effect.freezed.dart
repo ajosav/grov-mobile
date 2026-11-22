@@ -56,12 +56,11 @@ extension SignOnEffectPatterns on SignOnEffect {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( SignOnToPassword value)?  toPassword,TResult Function( SignOnToJoin value)?  toJoin,TResult Function( SignOnSignedIn value)?  signedIn,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( SignOnToCode value)?  toCode,TResult Function( SignOnSignedIn value)?  signedIn,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case SignOnToPassword() when toPassword != null:
-return toPassword(_that);case SignOnToJoin() when toJoin != null:
-return toJoin(_that);case SignOnSignedIn() when signedIn != null:
+case SignOnToCode() when toCode != null:
+return toCode(_that);case SignOnSignedIn() when signedIn != null:
 return signedIn(_that);case _:
   return orElse();
 
@@ -80,12 +79,11 @@ return signedIn(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( SignOnToPassword value)  toPassword,required TResult Function( SignOnToJoin value)  toJoin,required TResult Function( SignOnSignedIn value)  signedIn,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( SignOnToCode value)  toCode,required TResult Function( SignOnSignedIn value)  signedIn,}){
 final _that = this;
 switch (_that) {
-case SignOnToPassword():
-return toPassword(_that);case SignOnToJoin():
-return toJoin(_that);case SignOnSignedIn():
+case SignOnToCode():
+return toCode(_that);case SignOnSignedIn():
 return signedIn(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -100,12 +98,11 @@ return signedIn(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( SignOnToPassword value)?  toPassword,TResult? Function( SignOnToJoin value)?  toJoin,TResult? Function( SignOnSignedIn value)?  signedIn,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( SignOnToCode value)?  toCode,TResult? Function( SignOnSignedIn value)?  signedIn,}){
 final _that = this;
 switch (_that) {
-case SignOnToPassword() when toPassword != null:
-return toPassword(_that);case SignOnToJoin() when toJoin != null:
-return toJoin(_that);case SignOnSignedIn() when signedIn != null:
+case SignOnToCode() when toCode != null:
+return toCode(_that);case SignOnSignedIn() when signedIn != null:
 return signedIn(_that);case _:
   return null;
 
@@ -123,11 +120,10 @@ return signedIn(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  toPassword,TResult Function()?  toJoin,TResult Function( Session session)?  signedIn,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  toCode,TResult Function( Session session)?  signedIn,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case SignOnToPassword() when toPassword != null:
-return toPassword();case SignOnToJoin() when toJoin != null:
-return toJoin();case SignOnSignedIn() when signedIn != null:
+case SignOnToCode() when toCode != null:
+return toCode();case SignOnSignedIn() when signedIn != null:
 return signedIn(_that.session);case _:
   return orElse();
 
@@ -146,11 +142,10 @@ return signedIn(_that.session);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  toPassword,required TResult Function()  toJoin,required TResult Function( Session session)  signedIn,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  toCode,required TResult Function( Session session)  signedIn,}) {final _that = this;
 switch (_that) {
-case SignOnToPassword():
-return toPassword();case SignOnToJoin():
-return toJoin();case SignOnSignedIn():
+case SignOnToCode():
+return toCode();case SignOnSignedIn():
 return signedIn(_that.session);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -165,11 +160,10 @@ return signedIn(_that.session);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  toPassword,TResult? Function()?  toJoin,TResult? Function( Session session)?  signedIn,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  toCode,TResult? Function( Session session)?  signedIn,}) {final _that = this;
 switch (_that) {
-case SignOnToPassword() when toPassword != null:
-return toPassword();case SignOnToJoin() when toJoin != null:
-return toJoin();case SignOnSignedIn() when signedIn != null:
+case SignOnToCode() when toCode != null:
+return toCode();case SignOnSignedIn() when signedIn != null:
 return signedIn(_that.session);case _:
   return null;
 
@@ -181,8 +175,8 @@ return signedIn(_that.session);case _:
 /// @nodoc
 
 
-class SignOnToPassword implements SignOnEffect {
-  const SignOnToPassword();
+class SignOnToCode implements SignOnEffect {
+  const SignOnToCode();
   
 
 
@@ -192,7 +186,7 @@ class SignOnToPassword implements SignOnEffect {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is SignOnToPassword);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is SignOnToCode);
 }
 
 
@@ -201,39 +195,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-    return 'SignOnEffect.toPassword()';
-}
-
-
-}
-
-
-
-
-/// @nodoc
-
-
-class SignOnToJoin implements SignOnEffect {
-  const SignOnToJoin();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is SignOnToJoin);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-    return 'SignOnEffect.toJoin()';
+    return 'SignOnEffect.toCode()';
 }
 
 

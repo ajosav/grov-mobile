@@ -2,11 +2,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../../../core/router/routes.dart';
 import '../../../../core/theme/app_tokens.dart' hide formatNaira;
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_progress.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../domain/entities/password_problem.dart';
+import '../../domain/entities/registration_ticket.dart';
 import '../cubit/auth_error.dart';
 import '../cubit/sign_on_cubit.dart';
 import '../cubit/sign_on_state.dart';
@@ -17,23 +18,21 @@ import '../widgets/auth_field.dart';
 import '../widgets/auth_heading.dart';
 import '../widgets/auth_link.dart';
 import '../widgets/auth_scaffold.dart';
-import '../widgets/password_checklist.dart';
-import '../widgets/password_visibility_button.dart';
 import 'sign_on_effects.dart';
 
-/// "Let's set you up": first name, phone and password for a new email.
-class const JoinView({super.key}) extends StatefulWidget {
+/// "Tell us about you": the first name, last name and phone of a new address.
+/// The code already verified the email, so there is no second code here.
+class const ProfileView(final RegistrationTicket ticket, {super.key})
+    extends StatefulWidget {
   @override
-  State<JoinView> createState() => _JoinViewState();
+  State<ProfileView> createState() => _ProfileViewState();
 }
 
-class _JoinViewState() extends State<JoinView> {
+class _ProfileViewState() extends State<ProfileView> {
   final _firstName = TextEditingController();
   final _lastName = TextEditingController();
   final _phone = TextEditingController();
-  final _password = TextEditingController();
   late final TextEditingController _email;
-  var _obscured = true;
 
   @override
   void initState() {
@@ -50,15 +49,14 @@ class _JoinViewState() extends State<JoinView> {
     _firstName.dispose();
     _lastName.dispose();
     _phone.dispose();
-    _password.dispose();
     super.dispose();
   }
 
-  void _submit() => context.read<SignOnCubit>().signUp(
+  void _submit() => context.read<SignOnCubit>().completeProfile(
+    ticket: widget.ticket.ticket,
     firstName: _firstName.text,
     lastName: _lastName.text,
     phone: _phone.text,
-    password: _password.text,
   );
 
   @override
@@ -72,8 +70,6 @@ class _JoinViewState() extends State<JoinView> {
       buildWhen: (a, b) =>
           a.busy != b.busy ||
           a.error != b.error ||
-          a.passwordProblems != b.passwordProblems ||
-          a.passwordServerChecked != b.passwordServerChecked ||
           a.termsVersion != b.termsVersion ||
           a.termsLoading != b.termsLoading ||
           a.termsAccepted != b.termsAccepted,
@@ -84,42 +80,47 @@ class _JoinViewState() extends State<JoinView> {
             : null;
         final phoneError =
             error == AuthError.phoneTaken || error == AuthError.phoneInvalid;
-        final commonFailed =
-            error == AuthError.passwordCommon ||
-            state.passwordProblems.contains(PasswordProblem.common) ||
-            state.passwordProblems.contains(PasswordProblem.emailLocalPart);
         final banner = switch (error) {
           null ||
           AuthError.emailTaken ||
           AuthError.phoneTaken ||
           AuthError.phoneInvalid ||
-          AuthError.termsStale ||
-          AuthError.passwordCommon => null,
+          AuthError.termsStale => null,
           _ => error,
         };
         return AuthScaffold(
-          onBack: context.pop,
+          onBack: () => context.go(Routes.welcome),
           body: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             spacing: AppSpace.s3,
             children: [
-              AuthHeading(l10n.joinTitle, subtitle: l10n.joinSubtitle),
+              AuthHeading(l10n.profileTitle, subtitle: l10n.profileSubtitle),
               if (error == AuthError.emailTaken)
                 AuthBanner(
                   error!.message(l10n),
-                  actionLabel: l10n.authLogIn,
-                  onAction: cubit.logInInstead,
+                  actionLabel: l10n.codeChangeEmail,
+                  onAction: () => context.go(Routes.welcome),
+                ),
+              if (error == AuthError.ticketExpired)
+                AuthBanner(
+                  error!.message(l10n),
+                  actionLabel: l10n.authContinue,
+                  onAction: () => context.go(Routes.welcome),
                 ),
               AuthField(
                 label: l10n.authEmailLabel,
                 controller: _email,
                 readOnly: true,
-                suffix: AuthLink(l10n.authChange, onTap: context.pop),
+                suffix: AuthLink(
+                  l10n.authChange,
+                  onTap: () => context.go(Routes.welcome),
+                ),
               ),
               AuthField(
                 label: l10n.authFirstNameLabel,
                 controller: _firstName,
+                autofocus: true,
                 textCapitalization: TextCapitalization.words,
                 textInputAction: TextInputAction.next,
                 autofillHints: const [AutofillHints.givenName],
@@ -135,7 +136,7 @@ class _JoinViewState() extends State<JoinView> {
                 label: l10n.authPhoneLabel,
                 controller: _phone,
                 keyboardType: TextInputType.phone,
-                textInputAction: TextInputAction.next,
+                textInputAction: TextInputAction.done,
                 autofillHints: const [AutofillHints.telephoneNumberNational],
                 prefix: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -158,28 +159,7 @@ class _JoinViewState() extends State<JoinView> {
                 onChanged: (_) {
                   if (phoneError) cubit.clearError();
                 },
-              ),
-              AuthField(
-                label: l10n.authPasswordLabel,
-                controller: _password,
-                obscure: _obscured,
-                hasError: commonFailed,
-                textInputAction: TextInputAction.done,
-                autofillHints: const [AutofillHints.newPassword],
-                onChanged: cubit.passwordChanged,
                 onSubmitted: (_) => _submit(),
-                suffix: PasswordVisibilityButton(
-                  obscured: _obscured,
-                  onToggle: () => setState(() => _obscured = !_obscured),
-                ),
-              ),
-              ListenableBuilder(
-                listenable: _password,
-                builder: (context, _) => PasswordChecklist(
-                  problems: state.passwordProblems,
-                  hasInput: _password.text.isNotEmpty,
-                  serverChecked: state.passwordServerChecked,
-                ),
               ),
               if (state.termsLoading)
                 Row(
@@ -215,21 +195,20 @@ class _JoinViewState() extends State<JoinView> {
                   actionLabel: l10n.authTryAgain,
                   onAction: cubit.loadTermsVersion,
                 ),
-              if (banner != null) AuthErrorBanner(banner),
+              if (banner != null && banner != AuthError.ticketExpired)
+                AuthErrorBanner(banner),
             ],
           ),
           actions: ListenableBuilder(
-            listenable: Listenable.merge([_firstName, _phone, _password]),
+            listenable: Listenable.merge([_firstName, _lastName, _phone]),
             builder: (context, _) {
               final ready =
                   _firstName.text.trim().isNotEmpty &&
+                  _lastName.text.trim().isNotEmpty &&
                   _phone.text.trim().isNotEmpty &&
-                  _password.text.isNotEmpty &&
                   state.termsVersion != null &&
                   state.termsAccepted &&
-                  !state.termsLoading &&
-                  !state.passwordProblems.contains(PasswordProblem.tooShort) &&
-                  !state.passwordProblems.contains(PasswordProblem.noSymbol);
+                  !state.termsLoading;
               return AppButton(
                 label: l10n.authCreateAccount,
                 loading: state.busy,

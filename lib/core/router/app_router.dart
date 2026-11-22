@@ -7,19 +7,13 @@ import '../di/injection.dart';
 import '../../features/auth/presentation/cubit/sign_on_cubit.dart';
 import '../../features/auth/presentation/pages/email_code_page.dart';
 import '../../features/auth/presentation/widgets/sign_in_transition.dart';
-import '../../features/auth/presentation/pages/forgot_help_page.dart';
-import '../../features/auth/presentation/pages/forgot_password_page.dart';
-import '../../features/auth/presentation/pages/forgot_sent_page.dart';
-import '../../features/auth/presentation/pages/join_page.dart';
-import '../../features/auth/presentation/pages/password_page.dart';
+import '../../features/auth/domain/entities/registration_ticket.dart';
 import '../../features/auth/presentation/pages/phone_page.dart';
-import '../../features/auth/presentation/pages/reset_password_page.dart';
+import '../../features/auth/presentation/pages/profile_page.dart';
 import '../../features/auth/presentation/pages/verified_page.dart';
 import '../../features/auth/presentation/pages/welcome_page.dart';
 import '../../features/auth/presentation/cubit/email_code_cubit.dart';
-import '../../features/auth/presentation/cubit/forgot_password_cubit.dart';
 import '../../features/auth/presentation/cubit/phone_cubit.dart';
-import '../../features/auth/presentation/cubit/reset_password_cubit.dart';
 import '../../features/home/presentation/cubit/home_cubit.dart';
 import '../../features/home/presentation/pages/home_page.dart';
 import '../../features/session/domain/entities/auth_gate.dart';
@@ -54,41 +48,23 @@ GoRouter buildRouter(SessionCubit session) {
         routes: [
           GoRoute(path: Routes.welcome, builder: (_, _) => const WelcomeView()),
           GoRoute(
-            path: Routes.password,
-            builder: (_, _) => const PasswordView(),
-          ),
-          GoRoute(path: Routes.join, builder: (_, _) => const JoinView()),
-          ShellRoute(
-            builder: (context, state, child) => BlocProvider(
-              create: (context) => getIt<ForgotPasswordCubit>(
-                param1: context.read<SignOnCubit>().state.email,
-              ),
-              child: child,
-            ),
-            routes: [
-              GoRoute(
-                path: Routes.forgot,
-                builder: (_, _) => const ForgotPasswordView(),
-              ),
-              GoRoute(
-                path: Routes.forgotSent,
-                builder: (_, _) => const ForgotSentView(),
-              ),
-              GoRoute(
-                path: Routes.forgotHelp,
-                builder: (_, _) => const ForgotHelpView(),
-              ),
-            ],
-          ),
-          GoRoute(
             path: Routes.code,
             builder: (context, _) => BlocProvider(
               create: (context) => getIt<EmailCodeCubit>(
-                param1: _sessionEmail(context.read<SessionCubit>().state),
-                param2: context.read<SignOnCubit>().state.challenge?.nextSendAt,
+                param1: context.read<SignOnCubit>().state.email,
+                param2: context.read<SignOnCubit>().state.codeNextSendAt,
               ),
               child: const EmailCodeView(),
             ),
+          ),
+          GoRoute(
+            path: Routes.profile,
+            // The ticket travels in `extra` and is not restorable: after a
+            // process death the person verifies the email again.
+            redirect: (_, state) =>
+                state.extra is RegistrationTicket ? null : Routes.welcome,
+            builder: (_, state) =>
+                ProfileView(state.extra! as RegistrationTicket),
           ),
           GoRoute(
             path: Routes.phone,
@@ -102,17 +78,6 @@ GoRouter buildRouter(SessionCubit session) {
             builder: (_, _) => const VerifiedView(),
           ),
         ],
-      ),
-      GoRoute(
-        path: Routes.reset,
-        builder: (_, state) {
-          final token = state.uri.queryParameters['token'] ?? '';
-          return BlocProvider(
-            key: ValueKey(token),
-            create: (_) => getIt<ResetPasswordCubit>(param1: token)..load(),
-            child: const ResetPasswordView(),
-          );
-        },
       ),
       StatefulShellRoute(
         builder: (context, state, shell) => shell,
@@ -189,23 +154,16 @@ String? _redirect(SessionState session, String location) => switch (session) {
   SessionSignedIn(:final session) => _signedIn(session.gate, location),
 };
 
-const _gateScreens = {Routes.code, Routes.phone, Routes.verified};
+const _gateScreens = {Routes.phone, Routes.verified};
 
 String? _signedOut(String location) {
-  if (location == Routes.reset) {
-    return null;
-  }
   final isSignOn =
       location.startsWith(Routes.welcome) && !_gateScreens.contains(location);
   return isSignOn ? null : Routes.welcome;
 }
 
 String? _signedIn(AuthGate gate, String location) {
-  if (location == Routes.reset) {
-    return null;
-  }
   return switch (gate) {
-    AuthGate.verifyEmail => location == Routes.code ? null : Routes.code,
     AuthGate.addPhone => location == Routes.phone ? null : Routes.phone,
     AuthGate.none =>
       location == Routes.code
@@ -216,13 +174,9 @@ String? _signedIn(AuthGate gate, String location) {
                           location.startsWith(Routes.welcome)
                       ? Routes.home
                       : null)),
+    AuthGate.verifyEmail ||
     AuthGate.acceptTerms ||
     AuthGate.mfa ||
     AuthGate.mfaEnrol => location == Routes.welcome ? null : Routes.welcome,
   };
 }
-
-String _sessionEmail(SessionState state) => switch (state) {
-  SessionSignedIn(:final session) => session.email ?? '',
-  _ => '',
-};

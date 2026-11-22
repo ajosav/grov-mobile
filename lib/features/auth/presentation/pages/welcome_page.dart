@@ -21,8 +21,6 @@ import '../widgets/social_buttons.dart';
 import '../widgets/terms_notice.dart';
 import 'sign_on_effects.dart';
 
-/// Welcome is the only door (D37): an email, then the server says whether to
-/// log in or join. Google and Apple sit under it.
 class const WelcomeView({super.key}) extends StatefulWidget {
   @override
   State<WelcomeView> createState() => _WelcomeViewState();
@@ -107,7 +105,7 @@ class _WelcomeViewState() extends State<WelcomeView> {
                 builder: (context, value, _) => AppButton(
                   label: l10n.authContinue,
                   loading: state.busy,
-                  loadingLabel: l10n.authBusyChecking,
+                  loadingLabel: l10n.authBusySending,
                   onPressed: offline || value.text.trim().isEmpty
                       ? null
                       : cubit.continueWithEmail,

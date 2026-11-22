@@ -6,7 +6,6 @@ part 'sign_on_effect.freezed.dart';
 
 @freezed
 sealed class SignOnEffect with _$SignOnEffect {
-  const factory SignOnEffect.toPassword() = SignOnToPassword;
-  const factory SignOnEffect.toJoin() = SignOnToJoin;
+  const factory SignOnEffect.toCode() = SignOnToCode;
   const factory SignOnEffect.signedIn(Session session) = SignOnSignedIn;
 }

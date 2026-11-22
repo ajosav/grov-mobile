@@ -68,11 +68,6 @@
   "authContinue": "Continue",
   "authOr": "or",
   "authChange": "Change",
-  "authLogIn": "Log in",
-  "authPasswordLabel": "Password",
-  "authPasswordHint": "Your password",
-  "authShowPassword": "Show password",
-  "authHidePassword": "Hide password",
   "authTermsNotice": "By continuing you agree to the {terms} and {privacy}.",
   "@authTermsNotice": {
     "placeholders": {
@@ -94,21 +89,11 @@
   "authOfflineBanner": "Sign-on needs a connection. Check your network and try again.",
   "authTryAgain": "Try again",
   "authRetryCountdown": "Try again in {time}",
-  "passwordTitle": "Welcome back",
-  "passwordSubtitle": "Enter your password to log in.",
-  "authForgotLink": "Forgot password?",
-  "errorAccountLocked": "Too many tries. Try again later, or reset your password.",
-  "errorSocialOnly": "This email signs in with Google or Apple.",
-  "joinTitle": "Let’s set you up",
-  "joinSubtitle": "A few details and you are in.",
+  "errorAccountLocked": "Too many tries. Try again later.",
   "authFirstNameLabel": "First name",
   "authLastNameLabel": "Last name",
   "authPhoneLabel": "Phone number",
   "authPhoneHelper": "Type 0803… or 803…",
-  "authCheckLength": "8 or more characters",
-  "authCheckSymbol": "Includes a symbol, like ! or #",
-  "authCheckCommon": "Not a common password",
-  "authCheckCommonFailed": "Not a common password. Try another.",
   "authCreateAccount": "Create account",
   "errorEmailTaken": "That email already has a {brand} account.",
   "@errorEmailTaken": {
@@ -118,13 +103,12 @@
       }
     }
   },
-  "errorPhoneTaken": "This number is already on an account. Log in with that email, or use a different number.",
+  "errorPhoneTaken": "This number is already on an account. Use a different number, or sign in with the email on that account.",
   "errorPhoneInvalid": "Enter a valid Nigerian mobile number.",
-  "errorPasswordWeak": "Use at least 8 characters with a symbol.",
   "errorInvalidEmail": "Enter a valid email address.",
   "codeTitle": "Check your email",
-  "codeSentTo": "We sent a 6-digit code to",
-  "codeChangeEmail": "Change email",
+  "codeSentTo": "We sent a 6-digit code to your email",
+  "codeChangeEmail": "Use a different email",
   "codeResendIn": "Resend code in {time}",
   "@codeResendIn": {
     "placeholders": {
@@ -150,62 +134,6 @@
   "codeAcceptedTitle": "Email verified",
   "codeAcceptedSub": "Thanks. That is the code we sent to",
   "codeTakingYouIn": "Taking you in…",
-  "changeEmailTitle": "Change your email",
-  "changeEmailSave": "Send a new code",
-  "changeEmailCancel": "Cancel",
-  "forgotTitle": "Reset your password",
-  "forgotSubtitle": "Enter your email and we’ll send you a link.",
-  "forgotSend": "Send reset link",
-  "forgotBack": "Back to log in",
-  "forgotSentBody": "We sent a reset link to {email}. It works for 30 minutes.",
-  "@forgotSentBody": {
-    "placeholders": {
-      "email": {
-        "type": "String"
-      }
-    }
-  },
-  "forgotResendIn": "Resend link in {time}",
-  "@forgotResendIn": {
-    "placeholders": {
-      "time": {
-        "type": "String"
-      }
-    }
-  },
-  "forgotOpenMail": "Open email app",
-  "forgotOpenMailHint": "Open your email app and look for our message.",
-  "forgotDidntGet": "I didn’t get it",
-  "helpTitle": "Didn’t get the email?",
-  "helpSubtitle": "Try these, then send the link again.",
-  "helpTipSpam": "Look in spam or promotions.",
-  "helpTipAddress": "Check the address is right: {email}",
-  "@helpTipAddress": {
-    "placeholders": {
-      "email": {
-        "type": "String"
-      }
-    }
-  },
-  "helpTipNetwork": "On a weak network it can take a few minutes.",
-  "helpSendAgain": "Send the link again",
-  "helpDifferentEmail": "Use a different email",
-  "helpContactSupport": "Contact support",
-  "helpContactSoon": "Support contact is not set up yet.",
-  "resetTitle": "Set a new password",
-  "resetSubtitle": "Choose one you have not used on {brand} before.",
-  "@resetSubtitle": {
-    "placeholders": {
-      "brand": {
-        "type": "String"
-      }
-    }
-  },
-  "resetNewPasswordLabel": "New password",
-  "resetSave": "Save password",
-  "linkExpiredTitle": "This link has expired",
-  "linkExpiredBody": "Reset links work once and last 30 minutes. Send a new one to carry on.",
-  "linkSendNew": "Send a new link",
   "phoneTitle": "One more step",
   "phoneSubtitle": "Add a phone number for your account and your rider.",
   "doneTitle": "You’re in",
@@ -219,8 +147,6 @@
   "errorUnsupportedStep": "This sign-in needs a step this version of the app can’t do yet.",
   "errorTermsStale": "The terms have changed. Refresh them and agree to continue.",
   "errorPhoneAlreadySet": "This account already has a phone number. You can change it in settings.",
-  "errorEmailAlreadyVerified": "Your email is already confirmed. Sign in again to carry on.",
-  "errorEmailChangeNotStarted": "Ask for a code to your new email first.",
   "homeGreetingMorning": "Good morning, {name}",
   "@homeGreetingMorning": {
     "placeholders": {
@@ -310,12 +236,14 @@
   "pagedLoadFailedTitle": "This did not load",
   "pagedLoadFailedBody": "Check your connection and try again.",
   "pagedLoadMoreFailed": "Could not load more.",
-  "authBusyChecking": "Checking…",
   "authBusySigningIn": "Signing in…",
   "authBusyCreating": "Creating your account…",
   "authBusyVerifying": "Verifying…",
   "authBusySaving": "Saving…",
   "authBusySending": "Sending…",
-  "authLoadingLink": "Checking your link",
-  "startingUp": "Starting up"
+  "startingUp": "Starting up",
+  "profileTitle": "Tell us about you",
+  "profileSubtitle": "A few details and you are in.",
+  "errorTicketExpired": "That sign-up timed out. Enter your email to start again.",
+  "errorAccountSuspended": "This account is suspended. Contact support."
 }

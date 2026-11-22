@@ -120,21 +120,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authChange => 'Change';
 
   @override
-  String get authLogIn => 'Log in';
-
-  @override
-  String get authPasswordLabel => 'Password';
-
-  @override
-  String get authPasswordHint => 'Your password';
-
-  @override
-  String get authShowPassword => 'Show password';
-
-  @override
-  String get authHidePassword => 'Hide password';
-
-  @override
   String authTermsNotice(String terms, String privacy) {
     return 'By continuing you agree to the $terms and $privacy.';
   }
@@ -174,26 +159,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get passwordTitle => 'Welcome back';
-
-  @override
-  String get passwordSubtitle => 'Enter your password to log in.';
-
-  @override
-  String get authForgotLink => 'Forgot password?';
-
-  @override
-  String get errorAccountLocked =>
-      'Too many tries. Try again later, or reset your password.';
-
-  @override
-  String get errorSocialOnly => 'This email signs in with Google or Apple.';
-
-  @override
-  String get joinTitle => 'Let’s set you up';
-
-  @override
-  String get joinSubtitle => 'A few details and you are in.';
+  String get errorAccountLocked => 'Too many tries. Try again later.';
 
   @override
   String get authFirstNameLabel => 'First name';
@@ -208,18 +174,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authPhoneHelper => 'Type 0803… or 803…';
 
   @override
-  String get authCheckLength => '8 or more characters';
-
-  @override
-  String get authCheckSymbol => 'Includes a symbol, like ! or #';
-
-  @override
-  String get authCheckCommon => 'Not a common password';
-
-  @override
-  String get authCheckCommonFailed => 'Not a common password. Try another.';
-
-  @override
   String get authCreateAccount => 'Create account';
 
   @override
@@ -229,13 +183,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorPhoneTaken =>
-      'This number is already on an account. Log in with that email, or use a different number.';
+      'This number is already on an account. Use a different number, or sign in with the email on that account.';
 
   @override
   String get errorPhoneInvalid => 'Enter a valid Nigerian mobile number.';
-
-  @override
-  String get errorPasswordWeak => 'Use at least 8 characters with a symbol.';
 
   @override
   String get errorInvalidEmail => 'Enter a valid email address.';
@@ -244,10 +195,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get codeTitle => 'Check your email';
 
   @override
-  String get codeSentTo => 'We sent a 6-digit code to';
+  String get codeSentTo => 'We sent a 6-digit code to your email';
 
   @override
-  String get codeChangeEmail => 'Change email';
+  String get codeChangeEmail => 'Use a different email';
 
   @override
   String codeResendIn(String time) {
@@ -287,100 +238,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get codeTakingYouIn => 'Taking you in…';
-
-  @override
-  String get changeEmailTitle => 'Change your email';
-
-  @override
-  String get changeEmailSave => 'Send a new code';
-
-  @override
-  String get changeEmailCancel => 'Cancel';
-
-  @override
-  String get forgotTitle => 'Reset your password';
-
-  @override
-  String get forgotSubtitle => 'Enter your email and we’ll send you a link.';
-
-  @override
-  String get forgotSend => 'Send reset link';
-
-  @override
-  String get forgotBack => 'Back to log in';
-
-  @override
-  String forgotSentBody(String email) {
-    return 'We sent a reset link to $email. It works for 30 minutes.';
-  }
-
-  @override
-  String forgotResendIn(String time) {
-    return 'Resend link in $time';
-  }
-
-  @override
-  String get forgotOpenMail => 'Open email app';
-
-  @override
-  String get forgotOpenMailHint =>
-      'Open your email app and look for our message.';
-
-  @override
-  String get forgotDidntGet => 'I didn’t get it';
-
-  @override
-  String get helpTitle => 'Didn’t get the email?';
-
-  @override
-  String get helpSubtitle => 'Try these, then send the link again.';
-
-  @override
-  String get helpTipSpam => 'Look in spam or promotions.';
-
-  @override
-  String helpTipAddress(String email) {
-    return 'Check the address is right: $email';
-  }
-
-  @override
-  String get helpTipNetwork => 'On a weak network it can take a few minutes.';
-
-  @override
-  String get helpSendAgain => 'Send the link again';
-
-  @override
-  String get helpDifferentEmail => 'Use a different email';
-
-  @override
-  String get helpContactSupport => 'Contact support';
-
-  @override
-  String get helpContactSoon => 'Support contact is not set up yet.';
-
-  @override
-  String get resetTitle => 'Set a new password';
-
-  @override
-  String resetSubtitle(String brand) {
-    return 'Choose one you have not used on $brand before.';
-  }
-
-  @override
-  String get resetNewPasswordLabel => 'New password';
-
-  @override
-  String get resetSave => 'Save password';
-
-  @override
-  String get linkExpiredTitle => 'This link has expired';
-
-  @override
-  String get linkExpiredBody =>
-      'Reset links work once and last 30 minutes. Send a new one to carry on.';
-
-  @override
-  String get linkSendNew => 'Send a new link';
 
   @override
   String get phoneTitle => 'One more step';
@@ -426,14 +283,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get errorPhoneAlreadySet =>
       'This account already has a phone number. You can change it in settings.';
-
-  @override
-  String get errorEmailAlreadyVerified =>
-      'Your email is already confirmed. Sign in again to carry on.';
-
-  @override
-  String get errorEmailChangeNotStarted =>
-      'Ask for a code to your new email first.';
 
   @override
   String homeGreetingMorning(String name) {
@@ -558,9 +407,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pagedLoadMoreFailed => 'Could not load more.';
 
   @override
-  String get authBusyChecking => 'Checking…';
-
-  @override
   String get authBusySigningIn => 'Signing in…';
 
   @override
@@ -576,8 +422,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authBusySending => 'Sending…';
 
   @override
-  String get authLoadingLink => 'Checking your link';
+  String get startingUp => 'Starting up';
 
   @override
-  String get startingUp => 'Starting up';
+  String get profileTitle => 'Tell us about you';
+
+  @override
+  String get profileSubtitle => 'A few details and you are in.';
+
+  @override
+  String get errorTicketExpired =>
+      'That sign-up timed out. Enter your email to start again.';
+
+  @override
+  String get errorAccountSuspended =>
+      'This account is suspended. Contact support.';
 }

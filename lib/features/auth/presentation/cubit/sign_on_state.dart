@@ -1,8 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../domain/entities/account_lookup.dart';
-import '../../domain/entities/otp_challenge.dart';
-import '../../domain/entities/password_problem.dart';
 import 'auth_error.dart';
 import 'sign_on_effect.dart';
 
@@ -12,7 +9,6 @@ part 'sign_on_state.freezed.dart';
 abstract class SignOnState with _$SignOnState {
   const factory SignOnState({
     @Default('') String email,
-    AccountLookup? lookup,
     @Default(false) bool busy,
 
     /// A sign-in succeeded and the app is moving on: the full-screen transition.
@@ -20,16 +16,11 @@ abstract class SignOnState with _$SignOnState {
     String? termsVersion,
     @Default(false) bool termsLoading,
     @Default(false) bool termsAccepted,
-    @Default(<PasswordProblem>{}) Set<PasswordProblem> passwordProblems,
-
-    /// True once the server has confirmed the checklist (not just local rules).
-    @Default(false) bool passwordServerChecked,
     AuthError? error,
-    String? serverErrorMessage,
-    DateTime? retryAt,
 
-    /// The code sent by sign-up, so the code screen can start its countdown.
-    OtpChallenge? challenge,
+    /// When another code may be asked for, so the code screen can start its
+    /// countdown. Set when the code was sent (or was already sent).
+    DateTime? codeNextSendAt,
     SignOnEffect? effect,
   }) = _SignOnState;
 }

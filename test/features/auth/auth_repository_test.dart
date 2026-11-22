@@ -7,7 +7,8 @@ import 'package:app_mobile/features/auth/data/datasources/device_identity_data_s
 import 'package:app_mobile/features/auth/data/datasources/gated_auth_api.dart';
 import 'package:app_mobile/features/auth/data/datasources/sign_on_api.dart';
 import 'package:app_mobile/features/auth/data/repositories/auth_repository_impl.dart';
-import 'package:app_mobile/features/auth/domain/entities/new_account.dart';
+import 'package:app_mobile/features/auth/domain/entities/code_verification.dart';
+import 'package:app_mobile/features/auth/domain/entities/new_profile.dart';
 import 'package:app_mobile/features/session/domain/entities/auth_gate.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -106,6 +107,14 @@ void main() {
     );
   }
 
+  const profile = NewProfile(
+    ticket: 'ticket-abc',
+    firstName: 'Ngozi',
+    lastName: 'Okafor',
+    phone: '+2348031234567',
+    termsVersion: 'terms-test',
+  );
+
   group('requests match the API contract', () {
     test('current terms version comes from the public client config', () async {
       final stub = _Stub(
@@ -125,31 +134,69 @@ void main() {
       expect(result.valueOrNull, 'terms-current');
     });
 
-    test(
-      'log-in posts the PASSWORD method and a device with a v7 id',
-      () async {
-        final stub = _Stub(200, _ok(_authData('DONE')));
-        final result = await repo(stub)
-            .logIn('ngozi@example.com', 'Secret!123');
+    test('requesting a code posts only the email and reads the times', () async {
+      final stub = _Stub(
+        200,
+        _ok({
+          'expiresAt': '2026-11-22T10:10:00.000Z',
+          'nextSendAt': '2026-11-22T10:01:00.000Z',
+        }),
+      );
+      final result = await repo(stub).requestCode('ngozi@example.com');
+      expect(stub.last!.method, 'POST');
+      expect(stub.last!.path, '/v1/auth/code/request');
+      expect(stub.body, {'email': 'ngozi@example.com'});
+      expect(result.valueOrNull?.nextSendAt, DateTime.utc(2026, 11, 22, 10, 1));
+    });
 
-        expect(stub.last!.path, '/v1/auth/login');
-        final body = stub.body! as Map<String, dynamic>;
-        expect(body['method'], 'PASSWORD');
-        expect(body['email'], 'ngozi@example.com');
-        expect(body['password'], 'Secret!123');
-        final device = body['device'] as Map<String, dynamic>;
-        expect(device['platform'], anyOf('IOS', 'ANDROID'));
-        expect(
-          device['id'],
-          matches(RegExp(r'^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab]')),
-        );
-        expect((device['name'] as String).length, lessThanOrEqualTo(80));
-        expect(result.valueOrNull?.session?.gate, AuthGate.none);
-      },
-    );
+    test('verifying posts email, code and a device with a v7 id', () async {
+      final stub = _Stub(
+        200,
+        _ok({
+          'state': 'SIGNED_IN',
+          'auth': _authData('DONE'),
+          'registration': null,
+        }),
+      );
+      final result = await repo(stub).verifyCode('ngozi@example.com', '429107');
+
+      expect(stub.last!.path, '/v1/auth/code/verify');
+      final body = stub.body! as Map<String, dynamic>;
+      expect(body['email'], 'ngozi@example.com');
+      expect(body['code'], '429107');
+      expect(body.containsKey('password'), isFalse);
+      final device = body['device'] as Map<String, dynamic>;
+      expect(device['platform'], anyOf('IOS', 'ANDROID'));
+      expect(
+        device['id'],
+        matches(RegExp(r'^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab]')),
+      );
+      expect((device['name'] as String).length, lessThanOrEqualTo(80));
+      final value = result.valueOrNull! as CodeSignedIn;
+      expect(value.outcome.session?.gate, AuthGate.none);
+    });
+
+    test('a new address answers with a ticket, not a session', () async {
+      final stub = _Stub(
+        200,
+        _ok({
+          'state': 'PROFILE_REQUIRED',
+          'auth': null,
+          'registration': {
+            'ticket': 'ticket-abc',
+            'expiresAt': '2026-11-22T10:15:00.000Z',
+          },
+        }),
+      );
+      final result = await repo(stub).verifyCode('new@example.com', '429107');
+      final value = result.valueOrNull! as CodeProfileRequired;
+      expect(value.ticket.ticket, 'ticket-abc');
+    });
 
     test('the device id is made once and stored', () async {
-      await repo(_Stub(200, _ok(_authData('DONE')))).logIn('a@b.co', 'x');
+      await repo(
+        _Stub(200, _ok({'state': 'SIGNED_IN', 'auth': _authData('DONE')})),
+      ).verifyCode('a@b.co', '123456');
       final written =
           verify(
                 () => storage.write(
@@ -162,111 +209,35 @@ void main() {
       // Next launch: the stored id comes back, nothing new is written.
       when(() => storage.read(key: 'app.device.id'))
           .thenAnswer((_) async => written);
-      final stub = _Stub(200, _ok(_authData('DONE')));
-      await repo(stub).logIn('a@b.co', 'x');
+      final stub = _Stub(
+        200,
+        _ok({'state': 'SIGNED_IN', 'auth': _authData('DONE')}),
+      );
+      await repo(stub).verifyCode('a@b.co', '123456');
       expect(((stub.body! as Map)['device'] as Map)['id'], written);
     });
 
-    test('sign-up sends the +234 number and the terms version', () async {
-      final stub = _Stub(201, _ok(_authData('VERIFY_EMAIL'), status: 201));
-      final result = await repo(stub).signUp(
-        const NewAccount(
-          email: 'ngozi@example.com',
-          firstName: 'Ngozi',
-          lastName: 'Okafor',
-          phone: '+2348031234567',
-          password: 'Secret!123',
-          termsVersion: 'terms-test',
-        ),
-      );
-      expect(stub.last!.path, '/v1/auth/signup');
+    test('completing the profile sends the ticket, names, +234 phone, terms', () async {
+      final stub = _Stub(201, _ok(_authData('DONE'), status: 201));
+      final result = await repo(stub).completeProfile(profile);
+      expect(stub.last!.path, '/v1/auth/code/complete');
       final body = stub.body! as Map<String, dynamic>;
-      expect(body['phone'], '+2348031234567');
+      expect(body['ticket'], 'ticket-abc');
       expect(body['firstName'], 'Ngozi');
       expect(body['lastName'], 'Okafor');
+      expect(body['phone'], '+2348031234567');
       expect(body['termsVersion'], 'terms-test');
-      expect(result.valueOrNull?.session?.gate, AuthGate.verifyEmail);
-      expect(result.valueOrNull?.session?.email, 'ngozi@example.com');
+      expect(body.containsKey('email'), isFalse, reason: 'the ticket knows it');
+      expect(body.containsKey('password'), isFalse);
+      expect(body['device'], isA<Map<String, dynamic>>());
+      expect(result.valueOrNull?.session?.gate, AuthGate.none);
     });
 
-    test(
-      'sign-up leaves the optional last name out when it is empty',
-      () async {
-        final stub = _Stub(201, _ok(_authData('VERIFY_EMAIL'), status: 201));
-        await repo(stub).signUp(
-          const NewAccount(
-            email: 'ngozi@example.com',
-            firstName: 'Ngozi',
-            lastName: '',
-            phone: '+2348031234567',
-            password: 'Secret!123',
-            termsVersion: 'terms-test',
-          ),
-        );
-        final body = stub.body! as Map<String, dynamic>;
-        expect(
-          body.containsKey('lastName'),
-          isFalse,
-          reason: 'the API field is optional: no empty string',
-        );
-        expect(body['firstName'], 'Ngozi');
-      },
-    );
-
-    test('the password check leaves email out when there is none', () async {
-      final stub = _Stub(200, _ok({'ok': true, 'problems': <String>[]}));
-      await repo(stub).checkPassword('Secret!123');
-      expect(stub.body, {'password': 'Secret!123'});
-      await repo(stub).checkPassword('Secret!123', email: 'n@e.co');
-      expect(stub.body, {'password': 'Secret!123', 'email': 'n@e.co'});
-    });
-
-    test('the email code, resend, change-address and phone paths', () async {
-      var stub = _Stub(200, _ok(_authData('DONE')));
-      await repo(stub).verifyEmail('429107');
-      expect(stub.last!.path, '/v1/auth/email/verify');
-      expect(stub.body, {'code': '429107'});
-
-      stub = _Stub(
-        200,
-        _ok({
-          'expiresAt': '2026-11-21T10:10:00.000Z',
-          'nextSendAt': '2026-11-21T10:01:00.000Z',
-        }),
-      );
-      final resent = await repo(stub).resendEmailCode();
-      expect(stub.last!.path, '/v1/auth/email/resend');
-      expect(resent.valueOrNull?.nextSendAt, DateTime.utc(2026, 11, 21, 10, 1));
-
-      await repo(stub).changeEmailAddress('new@example.com');
-      expect(stub.last!.path, '/v1/auth/email/change-address');
-      expect(stub.body, {'newEmail': 'new@example.com'});
-
-      stub = _Stub(200, _ok(_authData('DONE')));
+    test('the phone path', () async {
+      final stub = _Stub(200, _ok(_authData('DONE')));
       await repo(stub).completePhone('+2348031234567');
       expect(stub.last!.path, '/v1/auth/phone/complete');
       expect(stub.body, {'phone': '+2348031234567'});
-    });
-
-    test('reset: link check, then reset with a device', () async {
-      var stub = _Stub(200, _ok({'valid': true}));
-      expect((await repo(stub).checkResetLink('t' * 24)).valueOrNull, isTrue);
-      expect(stub.last!.path, '/v1/auth/password/reset/check');
-
-      stub = _Stub(200, _ok(_authData('DONE')));
-      await repo(stub).resetPassword('t' * 24, 'New!Pass123');
-      expect(stub.last!.path, '/v1/auth/password/reset');
-      final body = stub.body! as Map<String, dynamic>;
-      expect(body['token'], 't' * 24);
-      expect(body['device'], isA<Map<String, dynamic>>());
-
-      stub = _Stub(
-        202,
-        _ok({'nextSendAt': '2026-11-21T10:00:30.000Z'}, status: 202),
-      );
-      final forgot = await repo(stub).requestPasswordReset('a@b.co');
-      expect(stub.last!.path, '/v1/auth/password/forgot');
-      expect(forgot.valueOrNull, DateTime.utc(2026, 11, 21, 10, 0, 30));
     });
   });
 
@@ -277,7 +248,7 @@ void main() {
       Map<String, dynamic>? params,
     }) async {
       final r = await repo(_Stub(status, _err(status, code, params: params)))
-          .verifyEmail('000000');
+          .verifyCode('a@b.co', '000000');
       return r.failureOrNull;
     }
 
@@ -289,30 +260,44 @@ void main() {
       );
       expect(f, isA<ValidationFailure>());
       expect((f! as ValidationFailure).code, 'OTP_INVALID');
+      expect((f as ValidationFailure).params['attemptsLeft'], 2);
     });
 
-    test('resend too soon: 429 with the server nextSendAt', () async {
-      final f = await failureOf(
-        429,
-        'OTP_RESEND_TOO_SOON',
-        params: {'nextSendAt': '2026-11-21T10:00:30.000Z'},
-      );
+    test('asking again too soon: 429 with the server nextSendAt', () async {
+      final r = await repo(
+        _Stub(
+          429,
+          _err(
+            429,
+            'OTP_RESEND_TOO_SOON',
+            params: {'nextSendAt': '2026-11-22T10:00:30.000Z'},
+          ),
+        ),
+      ).requestCode('a@b.co');
       expect(
-        (f! as RateLimitedFailure).params['nextSendAt'],
-        '2026-11-21T10:00:30.000Z',
+        (r.failureOrNull! as RateLimitedFailure).params['nextSendAt'],
+        '2026-11-22T10:00:30.000Z',
       );
     });
 
-    test('wrong password is a 401', () async {
-      final r = await repo(_Stub(401, _err(401, 'AUTH_INVALID_CREDENTIALS')))
-          .logIn('a@b.co', 'x');
-      expect(r.failureOrNull, isA<UnauthorizedFailure>());
+    test('an expired ticket: 422 OTP_REGISTRATION_INVALID', () async {
+      final r = await repo(_Stub(422, _err(422, 'OTP_REGISTRATION_INVALID')))
+          .completeProfile(profile);
+      expect(
+        (r.failureOrNull! as ValidationFailure).code,
+        'OTP_REGISTRATION_INVALID',
+      );
     });
 
-    test('used reset link: 410', () async {
-      final r = await repo(_Stub(410, _err(410, 'RESET_LINK_USED')))
-          .resetPassword('t' * 24, 'x');
-      expect((r.failureOrNull! as GoneFailure).code, 'RESET_LINK_USED');
+    test('phone already used: 409 PHONE_TAKEN', () async {
+      final r = await repo(_Stub(409, _err(409, 'PHONE_TAKEN')))
+          .completeProfile(profile);
+      expect((r.failureOrNull! as ConflictFailure).code, 'PHONE_TAKEN');
+    });
+
+    test('a suspended account: 403 ACCOUNT_SUSPENDED', () async {
+      final f = await failureOf(403, 'ACCOUNT_SUSPENDED');
+      expect((f! as ForbiddenFailure).code, 'ACCOUNT_SUSPENDED');
     });
 
     test('a dead network is Offline, not a crash', () async {
@@ -325,7 +310,7 @@ void main() {
           GatedAuthApi(dio),
           DeviceIdentityDataSource(storage),
         ),
-      ).lookup('a@b.co');
+      ).requestCode('a@b.co');
       expect(r.failureOrNull, isA<OfflineFailure>());
     });
   });

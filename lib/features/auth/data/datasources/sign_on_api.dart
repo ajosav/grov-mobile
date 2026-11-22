@@ -4,10 +4,8 @@ import 'package:retrofit/retrofit.dart';
 import '../../../../core/network/api_response.dart';
 import '../models/auth_response_model.dart';
 import '../models/client_config_model.dart';
-import '../models/forgot_accepted_model.dart';
-import '../models/lookup_response_model.dart';
-import '../models/password_check_model.dart';
-import '../models/reset_link_check_model.dart';
+import '../models/code_verify_response_model.dart';
+import '../models/otp_challenge_model.dart';
 
 part 'sign_on_api.g.dart';
 
@@ -20,38 +18,18 @@ abstract class SignOnApi {
   @GET('/v1/config')
   Future<ApiResponse<ClientConfigModel>> getConfig();
 
-  @POST('/v1/auth/lookup')
-  Future<ApiResponse<LookupResponseModel>> lookup(
+  @POST('/v1/auth/code/request')
+  Future<ApiResponse<OtpChallengeModel>> requestCode(
     @Body() Map<String, dynamic> body,
   );
 
-  @POST('/v1/auth/password/check')
-  Future<ApiResponse<PasswordCheckModel>> checkPassword(
+  @POST('/v1/auth/code/verify')
+  Future<ApiResponse<CodeVerifyResponseModel>> verifyCode(
     @Body() Map<String, dynamic> body,
   );
 
-  @POST('/v1/auth/signup')
-  Future<ApiResponse<AuthResponseModel>> signUp(
-    @Body() Map<String, dynamic> body,
-  );
-
-  @POST('/v1/auth/login')
-  Future<ApiResponse<AuthResponseModel>> logIn(
-    @Body() Map<String, dynamic> body,
-  );
-
-  @POST('/v1/auth/password/forgot')
-  Future<ApiResponse<ForgotAcceptedModel>> forgotPassword(
-    @Body() Map<String, dynamic> body,
-  );
-
-  @POST('/v1/auth/password/reset/check')
-  Future<ApiResponse<ResetLinkCheckModel>> checkResetLink(
-    @Body() Map<String, dynamic> body,
-  );
-
-  @POST('/v1/auth/password/reset')
-  Future<ApiResponse<AuthResponseModel>> resetPassword(
+  @POST('/v1/auth/code/complete')
+  Future<ApiResponse<AuthResponseModel>> completeProfile(
     @Body() Map<String, dynamic> body,
   );
 }

@@ -292,36 +292,6 @@ abstract class AppLocalizations {
   /// **'Change'**
   String get authChange;
 
-  /// No description provided for @authLogIn.
-  ///
-  /// In en, this message translates to:
-  /// **'Log in'**
-  String get authLogIn;
-
-  /// No description provided for @authPasswordLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Password'**
-  String get authPasswordLabel;
-
-  /// No description provided for @authPasswordHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Your password'**
-  String get authPasswordHint;
-
-  /// No description provided for @authShowPassword.
-  ///
-  /// In en, this message translates to:
-  /// **'Show password'**
-  String get authShowPassword;
-
-  /// No description provided for @authHidePassword.
-  ///
-  /// In en, this message translates to:
-  /// **'Hide password'**
-  String get authHidePassword;
-
   /// No description provided for @authTermsNotice.
   ///
   /// In en, this message translates to:
@@ -388,47 +358,11 @@ abstract class AppLocalizations {
   /// **'Try again in {time}'**
   String authRetryCountdown(Object time);
 
-  /// No description provided for @passwordTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Welcome back'**
-  String get passwordTitle;
-
-  /// No description provided for @passwordSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter your password to log in.'**
-  String get passwordSubtitle;
-
-  /// No description provided for @authForgotLink.
-  ///
-  /// In en, this message translates to:
-  /// **'Forgot password?'**
-  String get authForgotLink;
-
   /// No description provided for @errorAccountLocked.
   ///
   /// In en, this message translates to:
-  /// **'Too many tries. Try again later, or reset your password.'**
+  /// **'Too many tries. Try again later.'**
   String get errorAccountLocked;
-
-  /// No description provided for @errorSocialOnly.
-  ///
-  /// In en, this message translates to:
-  /// **'This email signs in with Google or Apple.'**
-  String get errorSocialOnly;
-
-  /// No description provided for @joinTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Let’s set you up'**
-  String get joinTitle;
-
-  /// No description provided for @joinSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'A few details and you are in.'**
-  String get joinSubtitle;
 
   /// No description provided for @authFirstNameLabel.
   ///
@@ -454,30 +388,6 @@ abstract class AppLocalizations {
   /// **'Type 0803… or 803…'**
   String get authPhoneHelper;
 
-  /// No description provided for @authCheckLength.
-  ///
-  /// In en, this message translates to:
-  /// **'8 or more characters'**
-  String get authCheckLength;
-
-  /// No description provided for @authCheckSymbol.
-  ///
-  /// In en, this message translates to:
-  /// **'Includes a symbol, like ! or #'**
-  String get authCheckSymbol;
-
-  /// No description provided for @authCheckCommon.
-  ///
-  /// In en, this message translates to:
-  /// **'Not a common password'**
-  String get authCheckCommon;
-
-  /// No description provided for @authCheckCommonFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'Not a common password. Try another.'**
-  String get authCheckCommonFailed;
-
   /// No description provided for @authCreateAccount.
   ///
   /// In en, this message translates to:
@@ -493,7 +403,7 @@ abstract class AppLocalizations {
   /// No description provided for @errorPhoneTaken.
   ///
   /// In en, this message translates to:
-  /// **'This number is already on an account. Log in with that email, or use a different number.'**
+  /// **'This number is already on an account. Use a different number, or sign in with the email on that account.'**
   String get errorPhoneTaken;
 
   /// No description provided for @errorPhoneInvalid.
@@ -501,12 +411,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter a valid Nigerian mobile number.'**
   String get errorPhoneInvalid;
-
-  /// No description provided for @errorPasswordWeak.
-  ///
-  /// In en, this message translates to:
-  /// **'Use at least 8 characters with a symbol.'**
-  String get errorPasswordWeak;
 
   /// No description provided for @errorInvalidEmail.
   ///
@@ -523,13 +427,13 @@ abstract class AppLocalizations {
   /// No description provided for @codeSentTo.
   ///
   /// In en, this message translates to:
-  /// **'We sent a 6-digit code to'**
+  /// **'We sent a 6-digit code to your email'**
   String get codeSentTo;
 
   /// No description provided for @codeChangeEmail.
   ///
   /// In en, this message translates to:
-  /// **'Change email'**
+  /// **'Use a different email'**
   String get codeChangeEmail;
 
   /// No description provided for @codeResendIn.
@@ -597,174 +501,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Taking you in…'**
   String get codeTakingYouIn;
-
-  /// No description provided for @changeEmailTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Change your email'**
-  String get changeEmailTitle;
-
-  /// No description provided for @changeEmailSave.
-  ///
-  /// In en, this message translates to:
-  /// **'Send a new code'**
-  String get changeEmailSave;
-
-  /// No description provided for @changeEmailCancel.
-  ///
-  /// In en, this message translates to:
-  /// **'Cancel'**
-  String get changeEmailCancel;
-
-  /// No description provided for @forgotTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Reset your password'**
-  String get forgotTitle;
-
-  /// No description provided for @forgotSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter your email and we’ll send you a link.'**
-  String get forgotSubtitle;
-
-  /// No description provided for @forgotSend.
-  ///
-  /// In en, this message translates to:
-  /// **'Send reset link'**
-  String get forgotSend;
-
-  /// No description provided for @forgotBack.
-  ///
-  /// In en, this message translates to:
-  /// **'Back to log in'**
-  String get forgotBack;
-
-  /// No description provided for @forgotSentBody.
-  ///
-  /// In en, this message translates to:
-  /// **'We sent a reset link to {email}. It works for 30 minutes.'**
-  String forgotSentBody(String email);
-
-  /// No description provided for @forgotResendIn.
-  ///
-  /// In en, this message translates to:
-  /// **'Resend link in {time}'**
-  String forgotResendIn(String time);
-
-  /// No description provided for @forgotOpenMail.
-  ///
-  /// In en, this message translates to:
-  /// **'Open email app'**
-  String get forgotOpenMail;
-
-  /// No description provided for @forgotOpenMailHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Open your email app and look for our message.'**
-  String get forgotOpenMailHint;
-
-  /// No description provided for @forgotDidntGet.
-  ///
-  /// In en, this message translates to:
-  /// **'I didn’t get it'**
-  String get forgotDidntGet;
-
-  /// No description provided for @helpTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Didn’t get the email?'**
-  String get helpTitle;
-
-  /// No description provided for @helpSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Try these, then send the link again.'**
-  String get helpSubtitle;
-
-  /// No description provided for @helpTipSpam.
-  ///
-  /// In en, this message translates to:
-  /// **'Look in spam or promotions.'**
-  String get helpTipSpam;
-
-  /// No description provided for @helpTipAddress.
-  ///
-  /// In en, this message translates to:
-  /// **'Check the address is right: {email}'**
-  String helpTipAddress(String email);
-
-  /// No description provided for @helpTipNetwork.
-  ///
-  /// In en, this message translates to:
-  /// **'On a weak network it can take a few minutes.'**
-  String get helpTipNetwork;
-
-  /// No description provided for @helpSendAgain.
-  ///
-  /// In en, this message translates to:
-  /// **'Send the link again'**
-  String get helpSendAgain;
-
-  /// No description provided for @helpDifferentEmail.
-  ///
-  /// In en, this message translates to:
-  /// **'Use a different email'**
-  String get helpDifferentEmail;
-
-  /// No description provided for @helpContactSupport.
-  ///
-  /// In en, this message translates to:
-  /// **'Contact support'**
-  String get helpContactSupport;
-
-  /// No description provided for @helpContactSoon.
-  ///
-  /// In en, this message translates to:
-  /// **'Support contact is not set up yet.'**
-  String get helpContactSoon;
-
-  /// No description provided for @resetTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Set a new password'**
-  String get resetTitle;
-
-  /// No description provided for @resetSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose one you have not used on {brand} before.'**
-  String resetSubtitle(String brand);
-
-  /// No description provided for @resetNewPasswordLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'New password'**
-  String get resetNewPasswordLabel;
-
-  /// No description provided for @resetSave.
-  ///
-  /// In en, this message translates to:
-  /// **'Save password'**
-  String get resetSave;
-
-  /// No description provided for @linkExpiredTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'This link has expired'**
-  String get linkExpiredTitle;
-
-  /// No description provided for @linkExpiredBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Reset links work once and last 30 minutes. Send a new one to carry on.'**
-  String get linkExpiredBody;
-
-  /// No description provided for @linkSendNew.
-  ///
-  /// In en, this message translates to:
-  /// **'Send a new link'**
-  String get linkSendNew;
 
   /// No description provided for @phoneTitle.
   ///
@@ -843,18 +579,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This account already has a phone number. You can change it in settings.'**
   String get errorPhoneAlreadySet;
-
-  /// No description provided for @errorEmailAlreadyVerified.
-  ///
-  /// In en, this message translates to:
-  /// **'Your email is already confirmed. Sign in again to carry on.'**
-  String get errorEmailAlreadyVerified;
-
-  /// No description provided for @errorEmailChangeNotStarted.
-  ///
-  /// In en, this message translates to:
-  /// **'Ask for a code to your new email first.'**
-  String get errorEmailChangeNotStarted;
 
   /// No description provided for @homeGreetingMorning.
   ///
@@ -1060,12 +784,6 @@ abstract class AppLocalizations {
   /// **'Could not load more.'**
   String get pagedLoadMoreFailed;
 
-  /// No description provided for @authBusyChecking.
-  ///
-  /// In en, this message translates to:
-  /// **'Checking…'**
-  String get authBusyChecking;
-
   /// No description provided for @authBusySigningIn.
   ///
   /// In en, this message translates to:
@@ -1096,17 +814,35 @@ abstract class AppLocalizations {
   /// **'Sending…'**
   String get authBusySending;
 
-  /// No description provided for @authLoadingLink.
-  ///
-  /// In en, this message translates to:
-  /// **'Checking your link'**
-  String get authLoadingLink;
-
   /// No description provided for @startingUp.
   ///
   /// In en, this message translates to:
   /// **'Starting up'**
   String get startingUp;
+
+  /// No description provided for @profileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us about you'**
+  String get profileTitle;
+
+  /// No description provided for @profileSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A few details and you are in.'**
+  String get profileSubtitle;
+
+  /// No description provided for @errorTicketExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'That sign-up timed out. Enter your email to start again.'**
+  String get errorTicketExpired;
+
+  /// No description provided for @errorAccountSuspended.
+  ///
+  /// In en, this message translates to:
+  /// **'This account is suspended. Contact support.'**
+  String get errorAccountSuspended;
 }
 
 class _AppLocalizationsDelegate
