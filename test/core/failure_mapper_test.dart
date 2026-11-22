@@ -35,10 +35,27 @@ void main() {
     expect(f.params['nextSendAt'], '2026-11-21T10:00:00Z');
   });
 
-  test('410 is gone, with the code that says used or expired', () {
-    final f = mapApiFailure(410, body('RESET_LINK_USED'));
+  test('429 carries retryAt when the server sends one', () {
+    final f = mapApiFailure(
+      429,
+      body(
+        'RATE_LIMITED',
+        params: {'retryAt': '2026-11-21T10:05:00Z'},
+      ),
+    );
+    expect(f, isA<RateLimitedFailure>());
+    expect((f as RateLimitedFailure).params['retryAt'], '2026-11-21T10:05:00Z');
+  });
+
+  test('410 is gone and keeps its code', () {
+    final f = mapApiFailure(410, body('SOMETHING_GONE'));
     expect(f, isA<GoneFailure>());
-    expect((f as GoneFailure).code, 'RESET_LINK_USED');
+    expect((f as GoneFailure).code, 'SOMETHING_GONE');
+  });
+
+  test('422 keeps the code of an expired sign-up ticket', () {
+    final f = mapApiFailure(422, body('OTP_REGISTRATION_INVALID'));
+    expect((f as ValidationFailure).code, 'OTP_REGISTRATION_INVALID');
   });
 
   test('409 keeps its code; 401 and 403 stay as they were', () {
@@ -47,8 +64,15 @@ void main() {
       'EMAIL_TAKEN',
     );
     expect(
-      mapApiFailure(401, body('AUTH_INVALID_CREDENTIALS')),
-      isA<UnauthorizedFailure>(),
+      mapApiFailure(401, {
+        'code': 'SESSION_REVOKED',
+        'message': 'Signed out',
+      }),
+      isA<UnauthorizedFailure>().having(
+        (failure) => failure.message,
+        'message',
+        'Signed out',
+      ),
     );
     expect(
       mapApiFailure(403, body('AUTH_ACCOUNT_LOCKED')),

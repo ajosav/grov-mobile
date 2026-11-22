@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
@@ -8,30 +7,25 @@ import '../../features/auth/data/datasources/device_identity_data_source.dart';
 import '../../features/auth/data/datasources/gated_auth_api.dart';
 import '../../features/auth/data/datasources/sign_on_api.dart';
 import '../../features/auth/data/repositories/auth_repository_impl.dart';
-import '../../features/auth/data/repositories/debug_auth_repository.dart';
-import '../../features/auth/data/repositories/debug_switch_auth_repository.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
-import '../../features/auth/domain/usecases/change_email_address.dart';
-import '../../features/auth/domain/usecases/check_password.dart';
-import '../../features/auth/domain/usecases/check_reset_link.dart';
 import '../../features/auth/domain/usecases/complete_phone.dart';
-import '../../features/auth/domain/usecases/log_in.dart';
-import '../../features/auth/domain/usecases/lookup_account.dart';
-import '../../features/auth/domain/usecases/request_password_reset.dart';
-import '../../features/auth/domain/usecases/resend_email_code.dart';
-import '../../features/auth/domain/usecases/reset_password.dart';
-import '../../features/auth/domain/usecases/sign_up.dart';
-import '../../features/auth/domain/usecases/verify_email.dart';
+import '../../features/auth/domain/usecases/complete_profile.dart';
+import '../../features/auth/domain/usecases/get_terms_version.dart';
+import '../../features/auth/domain/usecases/request_sign_in_code.dart';
+import '../../features/auth/domain/usecases/verify_sign_in_code.dart';
 import '../../features/auth/presentation/cubit/email_code_cubit.dart';
-import '../../features/auth/presentation/cubit/forgot_password_cubit.dart';
 import '../../features/auth/presentation/cubit/phone_cubit.dart';
-import '../../features/auth/presentation/cubit/reset_password_cubit.dart';
 import '../../features/auth/presentation/cubit/sign_on_cubit.dart';
 import '../../features/session/data/datasources/auth_api.dart';
+import '../../features/session/data/datasources/session_api.dart';
 import '../../features/session/data/datasources/session_local_data_source.dart';
 import '../../features/session/data/datasources/session_remote_data_source.dart';
 import '../../features/session/data/repositories/session_repository_impl.dart';
 import '../../features/session/domain/repositories/session_repository.dart';
+import '../../features/home/data/repositories/fixture_home_repository.dart';
+import '../../features/home/domain/repositories/home_repository.dart';
+import '../../features/home/domain/usecases/watch_home.dart';
+import '../../features/home/presentation/cubit/home_cubit.dart';
 import '../../features/session/domain/usecases/refresh_session.dart';
 import '../../features/session/domain/usecases/restore_session.dart';
 import '../../features/session/domain/usecases/save_session.dart';
@@ -76,6 +70,7 @@ Future<void> configureDependencies({AppDatabase? database}) async {
   _auth();
   _settings();
   _sync();
+  _home();
   getIt.registerLazySingleton<GoRouter>(
     () => buildRouter(getIt<SessionCubit>()),
   );
@@ -90,8 +85,6 @@ void _core(AppDatabase? database) {
     ..registerLazySingleton<Clock>(SystemClock.new)
     ..registerLazySingleton<ConnectivityService>(ConnectivityPlusService.new)
     ..registerLazySingleton<DeviceCapabilities>(PlatformDeviceCapabilities.new)
-    // The session view model is the token provider; the network layer never
-    // imports session code.
     ..registerLazySingleton<TokenProvider>(() => getIt<SessionCubit>())
     ..registerLazySingleton<Dio>(() => buildDio(getIt<TokenProvider>()));
 }
@@ -101,7 +94,9 @@ void _session() {
     // Retrofit API on the interceptor-free client: refresh must never recurse.
     ..registerLazySingleton(() => AuthApi(buildBareDio()))
     ..registerLazySingleton(SessionLocalDataSource.new)
-    ..registerLazySingleton(() => SessionRemoteDataSource(getIt()))
+    ..registerLazySingleton(
+      () => SessionRemoteDataSource(getIt(), () => SessionApi(getIt<Dio>())),
+    )
     ..registerLazySingleton<SessionRepository>(
       () => SessionRepositoryImpl(local: getIt(), remote: getIt()),
     )
@@ -122,60 +117,33 @@ void _session() {
 
 void _auth() {
   getIt
-    // Public calls on the interceptor-free Dio; the gate calls (email code,
-    // phone) need the gated session's bearer token, so they use the app Dio.
+    // Public calls on the interceptor-free Dio; the gate call (phone) needs the gated session's bearer token, so it uses the app Dio.
     ..registerLazySingleton(() => SignOnApi(buildBareDio()))
     ..registerLazySingleton(() => GatedAuthApi(getIt<Dio>()))
     ..registerLazySingleton(DeviceIdentityDataSource.new)
     ..registerLazySingleton(
       () => AuthRemoteDataSource(getIt(), getIt(), getIt()),
     )
-    ..registerLazySingleton<AuthRepository>(() {
-      final real = AuthRepositoryImpl(getIt());
-      // Debug builds can answer from sample data (see DebugConfig); a release
-      // build gets the real repository and drops the sample code entirely.
-      return kDebugMode
-          ? DebugSwitchAuthRepository(real: real, sample: DebugAuthRepository())
-          : real;
-    })
-    ..registerLazySingleton(() => LookupAccount(getIt()))
-    ..registerLazySingleton(() => CheckPassword(getIt()))
-    ..registerLazySingleton(() => SignUp(getIt()))
-    ..registerLazySingleton(() => LogIn(getIt()))
-    ..registerLazySingleton(() => VerifyEmail(getIt()))
-    ..registerLazySingleton(() => ResendEmailCode(getIt()))
-    ..registerLazySingleton(() => ChangeEmailAddress(getIt()))
-    ..registerLazySingleton(() => RequestPasswordReset(getIt()))
-    ..registerLazySingleton(() => CheckResetLink(getIt()))
-    ..registerLazySingleton(() => ResetPassword(getIt()))
+    ..registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(getIt()))
+    ..registerLazySingleton(() => GetTermsVersion(getIt()))
+    ..registerLazySingleton(() => RequestSignInCode(getIt()))
+    ..registerLazySingleton(() => VerifySignInCode(getIt()))
+    ..registerLazySingleton(() => CompleteProfile(getIt()))
     ..registerLazySingleton(() => CompletePhone(getIt()))
     // Screen- and flow-scoped: created by the route that owns them.
     ..registerFactory(
       () => SignOnCubit(
-        lookupAccount: getIt(),
-        logIn: getIt(),
-        signUp: getIt(),
-        checkPassword: getIt(),
+        requestCode: getIt(),
+        completeProfile: getIt(),
+        getTermsVersion: getIt(),
       ),
     )
     ..registerFactoryParam<EmailCodeCubit, String, DateTime?>(
       (email, nextSendAt) => EmailCodeCubit(
-        verifyEmail: getIt(),
-        resendEmailCode: getIt(),
-        changeEmailAddress: getIt(),
+        verifyCode: getIt(),
+        requestCode: getIt(),
         email: email,
         nextSendAt: nextSendAt,
-      ),
-    )
-    ..registerFactoryParam<ForgotPasswordCubit, String, void>(
-      (email, _) => ForgotPasswordCubit(getIt(), email: email),
-    )
-    ..registerFactoryParam<ResetPasswordCubit, String, void>(
-      (token, _) => ResetPasswordCubit(
-        checkResetLink: getIt(),
-        resetPassword: getIt(),
-        checkPassword: getIt(),
-        token: token,
       ),
     )
     ..registerFactory(() => PhoneCubit(getIt()));
@@ -220,4 +188,12 @@ void _sync() {
       ),
       dispose: (c) => c.close(),
     );
+}
+
+void _home() {
+  getIt
+    // Fixture until the API has a home summary (DECISIONS M-043).
+    ..registerLazySingleton<HomeRepository>(FixtureHomeRepository.new)
+    ..registerLazySingleton(() => WatchHome(getIt()))
+    ..registerFactory(() => HomeCubit(watchHome: getIt(), clock: getIt()));
 }

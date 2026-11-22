@@ -1,21 +1,17 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/error/failure.dart';
 import '../../../../core/error/result.dart';
-import '../../../../core/usecase/usecase.dart';
-import '../../domain/usecases/change_email_address.dart';
-import '../../domain/usecases/resend_email_code.dart';
-import '../../domain/usecases/verify_email.dart';
+import '../../domain/entities/code_verification.dart';
+import '../../domain/usecases/request_sign_in_code.dart';
+import '../../domain/usecases/verify_sign_in_code.dart';
 import 'auth_error.dart';
-import 'safe_emit.dart';
 import 'email_code_state.dart';
+import 'safe_emit.dart';
 
-/// The 6-digit email code (the gate after sign-up, and after a log-in with an
-/// unverified email). Screen-scoped: created by the code route.
+/// The 6-digit sign-in code. Screen-scoped: created by the code route.
 class EmailCodeCubit({
-  required final VerifyEmail _verifyEmail,
-  required final ResendEmailCode _resendEmailCode,
-  required final ChangeEmailAddress _changeEmailAddress,
+  required final VerifySignInCode _verifyCode,
+  required final RequestSignInCode _requestCode,
   required final String email,
   final DateTime? nextSendAt,
 }) extends Cubit<EmailCodeState> with SafeEmit<EmailCodeState> {
@@ -43,24 +39,34 @@ class EmailCodeCubit({
       return;
     }
     emit(state.copyWith(status: EmailCodeStatus.verifying, error: null));
-    switch (await _verifyEmail(state.code)) {
+    switch (await _verifyCode((email: state.email, code: state.code))) {
       case Ok(:final value):
-        final session = value.session;
-        if (session == null) {
-          emit(
-            state.copyWith(
-              status: EmailCodeStatus.entering,
-              error: AuthError.unsupportedStep,
-            ),
-          );
-          return;
+        switch (value) {
+          case CodeSignedIn(:final outcome):
+            final session = outcome.session;
+            if (session == null) {
+              emit(
+                state.copyWith(
+                  status: EmailCodeStatus.entering,
+                  error: AuthError.unsupportedStep,
+                ),
+              );
+              return;
+            }
+            emit(
+              state.copyWith(
+                status: EmailCodeStatus.accepted,
+                verifiedSession: session,
+              ),
+            );
+          case CodeProfileRequired(:final ticket):
+            emit(
+              state.copyWith(
+                status: EmailCodeStatus.accepted,
+                profileTicket: ticket,
+              ),
+            );
         }
-        emit(
-          state.copyWith(
-            status: EmailCodeStatus.accepted,
-            verifiedSession: session,
-          ),
-        );
       case Err(:final failure):
         final error = authErrorOf(failure);
         emit(
@@ -79,7 +85,7 @@ class EmailCodeCubit({
       return;
     }
     emit(state.copyWith(resending: true, error: null));
-    switch (await _resendEmailCode(const NoParams())) {
+    switch (await _requestCode(state.email)) {
       case Ok(:final value):
         emit(
           state.copyWith(
@@ -97,25 +103,6 @@ class EmailCodeCubit({
             error: authErrorOf(failure),
           ),
         );
-    }
-  }
-
-  /// Fixes a mistyped email while the account is still unverified.
-  Future<Failure?> changeEmail(String newEmail) async {
-    switch (await _changeEmailAddress(newEmail.trim())) {
-      case Ok(:final value):
-        emit(
-          state.copyWith(
-            email: newEmail.trim(),
-            code: '',
-            status: EmailCodeStatus.entering,
-            error: null,
-            nextSendAt: value.nextSendAt,
-          ),
-        );
-        return null;
-      case Err(:final failure):
-        return failure;
     }
   }
 }

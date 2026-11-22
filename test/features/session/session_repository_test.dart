@@ -7,6 +7,7 @@ import 'package:app_mobile/core/error/failure.dart';
 import 'package:app_mobile/core/error/result.dart';
 import 'package:app_mobile/core/network/interceptors.dart';
 import 'package:app_mobile/features/session/data/datasources/auth_api.dart';
+import 'package:app_mobile/features/session/data/datasources/session_api.dart';
 import 'package:app_mobile/features/session/data/datasources/session_local_data_source.dart';
 import 'package:app_mobile/features/session/data/datasources/session_remote_data_source.dart';
 import 'package:app_mobile/features/session/data/repositories/session_repository_impl.dart';
@@ -54,7 +55,10 @@ final _current = Session(
 SessionRepositoryImpl _repo(_StubAdapter adapter, _MockStorage storage) =>
     SessionRepositoryImpl(
       local: SessionLocalDataSource(storage),
-      remote: SessionRemoteDataSource(AuthApi(_dio(adapter))),
+      remote: SessionRemoteDataSource(
+        AuthApi(_dio(adapter)),
+        () => SessionApi(_dio(adapter)),
+      ),
     );
 
 void main() {
@@ -94,6 +98,32 @@ void main() {
         value: any(named: 'value'),
       ),
     ).called(1);
+  });
+
+  test('revoke posts to the logout endpoint and keeps the tokens', () async {
+    final adapter = _StubAdapter(200, {
+      'status': true,
+      'statusCode': 200,
+      'message': 'Success',
+      'data': null,
+    });
+    final result = await _repo(adapter, storage).revoke();
+
+    expect(result, isA<Ok<void>>());
+    expect(adapter.last?.method, 'POST');
+    expect(adapter.last?.path, '/v1/auth/logout');
+    expect(adapter.last?.data, {'forgetDevice': false});
+    verifyNever(() => storage.delete(key: any(named: 'key')));
+  });
+
+  test('a failed revoke is a Failure, never a throw', () async {
+    final adapter = _StubAdapter(500, {
+      'status': false,
+      'statusCode': 500,
+      'message': 'boom',
+    });
+    final result = await _repo(adapter, storage).revoke();
+    expect(result.failureOrNull, isA<ServerFailure>());
   });
 
   test('null tokens (revoked) is Ok(null) and nothing is persisted', () async {

@@ -26,10 +26,7 @@ class const AuthResponseModel({
     final gate = _gateOf(nextStep);
     // Only the steps this app can finish get a session. For the rest (two-step
     // sign-in, stale terms) the app must not open, so no session is made.
-    final supported =
-        gate == AuthGate.none ||
-        gate == AuthGate.verifyEmail ||
-        gate == AuthGate.addPhone;
+    final supported = gate == AuthGate.none || gate == AuthGate.addPhone;
     return AuthOutcome(
       session: pair == null || !supported
           ? null

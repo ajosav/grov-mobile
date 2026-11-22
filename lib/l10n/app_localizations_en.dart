@@ -120,21 +120,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authChange => 'Change';
 
   @override
-  String get authLogIn => 'Log in';
-
-  @override
-  String get authPasswordLabel => 'Password';
-
-  @override
-  String get authPasswordHint => 'Your password';
-
-  @override
-  String get authShowPassword => 'Show password';
-
-  @override
-  String get authHidePassword => 'Hide password';
-
-  @override
   String authTermsNotice(String terms, String privacy) {
     return 'By continuing you agree to the $terms and $privacy.';
   }
@@ -144,6 +129,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get authPrivacyLink => 'Privacy Policy';
+
+  @override
+  String get authTermsAcceptance => 'I agree to the Terms and Conditions.';
+
+  @override
+  String get authTermsLoading => 'Checking the current terms…';
 
   @override
   String get authGoogleLabel => 'Continue with Google';
@@ -163,30 +154,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authTryAgain => 'Try again';
 
   @override
-  String get passwordTitle => 'Welcome back';
+  String authRetryCountdown(Object time) {
+    return 'Try again in $time';
+  }
 
   @override
-  String get passwordSubtitle => 'Enter your password to log in.';
-
-  @override
-  String get authForgotLink => 'Forgot password?';
-
-  @override
-  String get errorWrongPassword =>
-      'That password isn’t right. Try again, or reset it.';
-
-  @override
-  String get errorAccountLocked =>
-      'Too many tries. Try again later, or reset your password.';
-
-  @override
-  String get errorSocialOnly => 'This email signs in with Google or Apple.';
-
-  @override
-  String get joinTitle => 'Let’s set you up';
-
-  @override
-  String get joinSubtitle => 'A few details and you are in.';
+  String get errorAccountLocked => 'Too many tries. Try again later.';
 
   @override
   String get authFirstNameLabel => 'First name';
@@ -201,18 +174,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authPhoneHelper => 'Type 0803… or 803…';
 
   @override
-  String get authCheckLength => '8 or more characters';
-
-  @override
-  String get authCheckSymbol => 'Includes a symbol, like ! or #';
-
-  @override
-  String get authCheckCommon => 'Not a common password';
-
-  @override
-  String get authCheckCommonFailed => 'Not a common password. Try another.';
-
-  @override
   String get authCreateAccount => 'Create account';
 
   @override
@@ -222,13 +183,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorPhoneTaken =>
-      'This number is already on an account. Log in with that email, or use a different number.';
+      'This number is already on an account. Use a different number, or sign in with the email on that account.';
 
   @override
   String get errorPhoneInvalid => 'Enter a valid Nigerian mobile number.';
-
-  @override
-  String get errorPasswordWeak => 'Use at least 8 characters with a symbol.';
 
   @override
   String get errorInvalidEmail => 'Enter a valid email address.';
@@ -237,10 +195,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get codeTitle => 'Check your email';
 
   @override
-  String get codeSentTo => 'We sent a 6-digit code to';
+  String get codeSentTo => 'We sent a 6-digit code to your email';
 
   @override
-  String get codeChangeEmail => 'Change email';
+  String get codeChangeEmail => 'Use a different email';
 
   @override
   String codeResendIn(String time) {
@@ -282,100 +240,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get codeTakingYouIn => 'Taking you in…';
 
   @override
-  String get changeEmailTitle => 'Change your email';
-
-  @override
-  String get changeEmailSave => 'Send a new code';
-
-  @override
-  String get changeEmailCancel => 'Cancel';
-
-  @override
-  String get forgotTitle => 'Reset your password';
-
-  @override
-  String get forgotSubtitle => 'Enter your email and we’ll send you a link.';
-
-  @override
-  String get forgotSend => 'Send reset link';
-
-  @override
-  String get forgotBack => 'Back to log in';
-
-  @override
-  String forgotSentBody(String email) {
-    return 'We sent a reset link to $email. It works for 30 minutes.';
-  }
-
-  @override
-  String forgotResendIn(String time) {
-    return 'Resend link in $time';
-  }
-
-  @override
-  String get forgotOpenMail => 'Open email app';
-
-  @override
-  String get forgotOpenMailHint =>
-      'Open your email app and look for our message.';
-
-  @override
-  String get forgotDidntGet => 'I didn’t get it';
-
-  @override
-  String get helpTitle => 'Didn’t get the email?';
-
-  @override
-  String get helpSubtitle => 'Try these, then send the link again.';
-
-  @override
-  String get helpTipSpam => 'Look in spam or promotions.';
-
-  @override
-  String helpTipAddress(String email) {
-    return 'Check the address is right: $email';
-  }
-
-  @override
-  String get helpTipNetwork => 'On a weak network it can take a few minutes.';
-
-  @override
-  String get helpSendAgain => 'Send the link again';
-
-  @override
-  String get helpDifferentEmail => 'Use a different email';
-
-  @override
-  String get helpContactSupport => 'Contact support';
-
-  @override
-  String get helpContactSoon => 'Support contact is not set up yet.';
-
-  @override
-  String get resetTitle => 'Set a new password';
-
-  @override
-  String resetSubtitle(String brand) {
-    return 'Choose one you have not used on $brand before.';
-  }
-
-  @override
-  String get resetNewPasswordLabel => 'New password';
-
-  @override
-  String get resetSave => 'Save password';
-
-  @override
-  String get linkExpiredTitle => 'This link has expired';
-
-  @override
-  String get linkExpiredBody =>
-      'Reset links work once and last 30 minutes. Send a new one to carry on.';
-
-  @override
-  String get linkSendNew => 'Send a new link';
-
-  @override
   String get phoneTitle => 'One more step';
 
   @override
@@ -414,5 +278,163 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorTermsStale =>
-      'The terms have changed. Update the app to continue.';
+      'The terms have changed. Refresh them and agree to continue.';
+
+  @override
+  String get errorPhoneAlreadySet =>
+      'This account already has a phone number. You can change it in settings.';
+
+  @override
+  String homeGreetingMorning(String name) {
+    return 'Good morning, $name';
+  }
+
+  @override
+  String homeGreetingAfternoon(String name) {
+    return 'Good afternoon, $name';
+  }
+
+  @override
+  String homeGreetingEvening(String name) {
+    return 'Good evening, $name';
+  }
+
+  @override
+  String get homeEncouragement => 'You’re making great progress!';
+
+  @override
+  String get homeNotificationsLabel => 'Notifications';
+
+  @override
+  String get homeWeekProgressTitle => 'This week’s progress';
+
+  @override
+  String get homeBudgetUsed => 'Budget used';
+
+  @override
+  String homeBudgetPercent(int percent) {
+    return '$percent%';
+  }
+
+  @override
+  String get homeMealsCompleted => 'Meals completed';
+
+  @override
+  String homeMealsCount(int done, int total) {
+    return '$done / $total';
+  }
+
+  @override
+  String get homeMealIdeasTitle => 'Today’s meal ideas';
+
+  @override
+  String get homeViewAll => 'View all';
+
+  @override
+  String get mealTimeBreakfast => 'Breakfast';
+
+  @override
+  String get mealTimeLunch => 'Lunch';
+
+  @override
+  String get mealTimeDinner => 'Dinner';
+
+  @override
+  String get mealTimeSnack => 'Snack';
+
+  @override
+  String homeMealSubtitle(String mealTime) {
+    return '$mealTime · meal idea';
+  }
+
+  @override
+  String get homeCooked => 'Cooked';
+
+  @override
+  String get homeStockListTitle => 'Stock list';
+
+  @override
+  String homeStockListSummary(int count, String amount) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items still to buy',
+      one: '1 item still to buy',
+    );
+    return '$_temp0 · $amount';
+  }
+
+  @override
+  String get homeQuickActionsTitle => 'Quick actions';
+
+  @override
+  String get homeActionViewPlan => 'View plan';
+
+  @override
+  String get homeActionBulkCooked => 'Bulk cooked food';
+
+  @override
+  String get homeActionSharingSlot => 'Book a sharing slot';
+
+  @override
+  String get homeActionAdjustBudget => 'Adjust budget';
+
+  @override
+  String get homeLoadFailedTitle => 'Home did not load';
+
+  @override
+  String get homeLoadFailedBody => 'Check your connection and try again.';
+
+  @override
+  String get homeRetry => 'Try again';
+
+  @override
+  String get loadingLabel => 'Loading';
+
+  @override
+  String get homeLoadingLabel => 'Loading your home';
+
+  @override
+  String get commonRetry => 'Try again';
+
+  @override
+  String get pagedLoadFailedTitle => 'This did not load';
+
+  @override
+  String get pagedLoadFailedBody => 'Check your connection and try again.';
+
+  @override
+  String get pagedLoadMoreFailed => 'Could not load more.';
+
+  @override
+  String get authBusySigningIn => 'Signing in…';
+
+  @override
+  String get authBusyCreating => 'Creating your account…';
+
+  @override
+  String get authBusyVerifying => 'Verifying…';
+
+  @override
+  String get authBusySaving => 'Saving…';
+
+  @override
+  String get authBusySending => 'Sending…';
+
+  @override
+  String get startingUp => 'Starting up';
+
+  @override
+  String get profileTitle => 'Tell us about you';
+
+  @override
+  String get profileSubtitle => 'A few details and you are in.';
+
+  @override
+  String get errorTicketExpired =>
+      'That sign-up timed out. Enter your email to start again.';
+
+  @override
+  String get errorAccountSuspended =>
+      'This account is suspended. Contact support.';
 }

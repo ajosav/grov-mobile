@@ -10,9 +10,9 @@ Failure mapApiFailure(int? status, Object? body) {
     case 400:
       return BadRequestFailure(message, code);
     case 401:
-      return const UnauthorizedFailure();
+      return UnauthorizedFailure(message, code);
     case 403:
-      return ForbiddenFailure(message);
+      return ForbiddenFailure(message, code);
     case 404:
       return const NotFoundFailure();
     case 409:

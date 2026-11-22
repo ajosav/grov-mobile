@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import '../../../../core/error/failure.dart';
 import '../../../../core/error/guard.dart';
 import '../../../../core/error/result.dart';
@@ -19,6 +21,13 @@ class const SessionRepositoryImpl({
   @override
   Future<Result<void>> save(Session session) =>
       guardLocal(() => _local.write(SessionModel.fromEntity(session)));
+
+  /// Short on purpose: sign-out must not hang on a bad connection.
+  static const _revokeTimeout = Duration(seconds: 5);
+
+  @override
+  Future<Result<void>> revoke() =>
+      guardApi(() => _remote.logout().timeout(_revokeTimeout));
 
   @override
   Future<Result<void>> clear() => guardLocal(_local.delete);

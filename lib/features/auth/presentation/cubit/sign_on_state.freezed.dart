@@ -15,9 +15,10 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SignOnState {
 
- String get email; AccountLookup? get lookup; bool get busy; Set<PasswordProblem> get passwordProblems;/// True once the server has confirmed the checklist (not just local rules).
- bool get passwordServerChecked; AuthError? get error;/// The code sent by sign-up, so the code screen can start its countdown.
- OtpChallenge? get challenge; SignOnEffect? get effect;
+ String get email; bool get busy;/// A sign-in succeeded and the app is moving on: the full-screen transition.
+ bool get signingIn; String? get termsVersion; bool get termsLoading; bool get termsAccepted; AuthError? get error;/// When another code may be asked for, so the code screen can start its
+/// countdown. Set when the code was sent (or was already sent).
+ DateTime? get codeNextSendAt; SignOnEffect? get effect;
 /// Create a copy of SignOnState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,20 +30,20 @@ $SignOnStateCopyWith<SignOnState> get copyWith => _$SignOnStateCopyWithImpl<Sign
 @override
 bool operator ==(Object other) {
   final _this = this as SignOnState;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SignOnState&&(identical(other.email, _this.email) || other.email == _this.email)&&(identical(other.lookup, _this.lookup) || other.lookup == _this.lookup)&&(identical(other.busy, _this.busy) || other.busy == _this.busy)&&const DeepCollectionEquality().equals(other.passwordProblems, _this.passwordProblems)&&(identical(other.passwordServerChecked, _this.passwordServerChecked) || other.passwordServerChecked == _this.passwordServerChecked)&&(identical(other.error, _this.error) || other.error == _this.error)&&(identical(other.challenge, _this.challenge) || other.challenge == _this.challenge)&&(identical(other.effect, _this.effect) || other.effect == _this.effect));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SignOnState&&(identical(other.email, _this.email) || other.email == _this.email)&&(identical(other.busy, _this.busy) || other.busy == _this.busy)&&(identical(other.signingIn, _this.signingIn) || other.signingIn == _this.signingIn)&&(identical(other.termsVersion, _this.termsVersion) || other.termsVersion == _this.termsVersion)&&(identical(other.termsLoading, _this.termsLoading) || other.termsLoading == _this.termsLoading)&&(identical(other.termsAccepted, _this.termsAccepted) || other.termsAccepted == _this.termsAccepted)&&(identical(other.error, _this.error) || other.error == _this.error)&&(identical(other.codeNextSendAt, _this.codeNextSendAt) || other.codeNextSendAt == _this.codeNextSendAt)&&(identical(other.effect, _this.effect) || other.effect == _this.effect));
 }
 
 
 @override
 int get hashCode {
   final _this = this as SignOnState;
-  return Object.hash(runtimeType,_this.email,_this.lookup,_this.busy,const DeepCollectionEquality().hash(_this.passwordProblems),_this.passwordServerChecked,_this.error,_this.challenge,_this.effect);
+  return Object.hash(runtimeType,_this.email,_this.busy,_this.signingIn,_this.termsVersion,_this.termsLoading,_this.termsAccepted,_this.error,_this.codeNextSendAt,_this.effect);
 }
 
 @override
 String toString() {
   final _this = this as SignOnState;
-  return 'SignOnState(email: ${_this.email}, lookup: ${_this.lookup}, busy: ${_this.busy}, passwordProblems: ${_this.passwordProblems}, passwordServerChecked: ${_this.passwordServerChecked}, error: ${_this.error}, challenge: ${_this.challenge}, effect: ${_this.effect})';
+  return 'SignOnState(email: ${_this.email}, busy: ${_this.busy}, signingIn: ${_this.signingIn}, termsVersion: ${_this.termsVersion}, termsLoading: ${_this.termsLoading}, termsAccepted: ${_this.termsAccepted}, error: ${_this.error}, codeNextSendAt: ${_this.codeNextSendAt}, effect: ${_this.effect})';
 }
 
 
@@ -53,11 +54,11 @@ abstract mixin class $SignOnStateCopyWith<$Res>  {
   factory $SignOnStateCopyWith(SignOnState value, $Res Function(SignOnState) _then) = _$SignOnStateCopyWithImpl;
 @useResult
 $Res call({
- String email, AccountLookup? lookup, bool busy, Set<PasswordProblem> passwordProblems, bool passwordServerChecked, AuthError? error, OtpChallenge? challenge, SignOnEffect? effect
+ String email, bool busy, bool signingIn, String? termsVersion, bool termsLoading, bool termsAccepted, AuthError? error, DateTime? codeNextSendAt, SignOnEffect? effect
 });
 
 
-$AccountLookupCopyWith<$Res>? get lookup;$OtpChallengeCopyWith<$Res>? get challenge;$SignOnEffectCopyWith<$Res>? get effect;
+$SignOnEffectCopyWith<$Res>? get effect;
 
 }
 /// @nodoc
@@ -70,44 +71,21 @@ class _$SignOnStateCopyWithImpl<$Res>
 
 /// Create a copy of SignOnState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? email = null,Object? lookup = freezed,Object? busy = null,Object? passwordProblems = null,Object? passwordServerChecked = null,Object? error = freezed,Object? challenge = freezed,Object? effect = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? email = null,Object? busy = null,Object? signingIn = null,Object? termsVersion = freezed,Object? termsLoading = null,Object? termsAccepted = null,Object? error = freezed,Object? codeNextSendAt = freezed,Object? effect = freezed,}) {
   return _then(SignOnState(
 email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
-as String,lookup: freezed == lookup ? _self.lookup : lookup // ignore: cast_nullable_to_non_nullable
-as AccountLookup?,busy: null == busy ? _self.busy : busy // ignore: cast_nullable_to_non_nullable
-as bool,passwordProblems: null == passwordProblems ? _self.passwordProblems : passwordProblems // ignore: cast_nullable_to_non_nullable
-as Set<PasswordProblem>,passwordServerChecked: null == passwordServerChecked ? _self.passwordServerChecked : passwordServerChecked // ignore: cast_nullable_to_non_nullable
+as String,busy: null == busy ? _self.busy : busy // ignore: cast_nullable_to_non_nullable
+as bool,signingIn: null == signingIn ? _self.signingIn : signingIn // ignore: cast_nullable_to_non_nullable
+as bool,termsVersion: freezed == termsVersion ? _self.termsVersion : termsVersion // ignore: cast_nullable_to_non_nullable
+as String?,termsLoading: null == termsLoading ? _self.termsLoading : termsLoading // ignore: cast_nullable_to_non_nullable
+as bool,termsAccepted: null == termsAccepted ? _self.termsAccepted : termsAccepted // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
-as AuthError?,challenge: freezed == challenge ? _self.challenge : challenge // ignore: cast_nullable_to_non_nullable
-as OtpChallenge?,effect: freezed == effect ? _self.effect : effect // ignore: cast_nullable_to_non_nullable
+as AuthError?,codeNextSendAt: freezed == codeNextSendAt ? _self.codeNextSendAt : codeNextSendAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,effect: freezed == effect ? _self.effect : effect // ignore: cast_nullable_to_non_nullable
 as SignOnEffect?,
   ));
 }
 /// Create a copy of SignOnState
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$AccountLookupCopyWith<$Res>? get lookup {
-    if (_self.lookup == null) {
-    return null;
-  }
-
-  return $AccountLookupCopyWith<$Res>(_self.lookup!, (value) {
-    return _then(_self.copyWith(lookup: value));
-  });
-}/// Create a copy of SignOnState
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$OtpChallengeCopyWith<$Res>? get challenge {
-    if (_self.challenge == null) {
-    return null;
-  }
-
-  return $OtpChallengeCopyWith<$Res>(_self.challenge!, (value) {
-    return _then(_self.copyWith(challenge: value));
-  });
-}/// Create a copy of SignOnState
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
@@ -201,10 +179,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String email,  AccountLookup? lookup,  bool busy,  Set<PasswordProblem> passwordProblems,  bool passwordServerChecked,  AuthError? error,  OtpChallenge? challenge,  SignOnEffect? effect)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String email,  bool busy,  bool signingIn,  String? termsVersion,  bool termsLoading,  bool termsAccepted,  AuthError? error,  DateTime? codeNextSendAt,  SignOnEffect? effect)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SignOnState() when $default != null:
-return $default(_that.email,_that.lookup,_that.busy,_that.passwordProblems,_that.passwordServerChecked,_that.error,_that.challenge,_that.effect);case _:
+return $default(_that.email,_that.busy,_that.signingIn,_that.termsVersion,_that.termsLoading,_that.termsAccepted,_that.error,_that.codeNextSendAt,_that.effect);case _:
   return orElse();
 
 }
@@ -222,10 +200,10 @@ return $default(_that.email,_that.lookup,_that.busy,_that.passwordProblems,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String email,  AccountLookup? lookup,  bool busy,  Set<PasswordProblem> passwordProblems,  bool passwordServerChecked,  AuthError? error,  OtpChallenge? challenge,  SignOnEffect? effect)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String email,  bool busy,  bool signingIn,  String? termsVersion,  bool termsLoading,  bool termsAccepted,  AuthError? error,  DateTime? codeNextSendAt,  SignOnEffect? effect)  $default,) {final _that = this;
 switch (_that) {
 case _SignOnState():
-return $default(_that.email,_that.lookup,_that.busy,_that.passwordProblems,_that.passwordServerChecked,_that.error,_that.challenge,_that.effect);case _:
+return $default(_that.email,_that.busy,_that.signingIn,_that.termsVersion,_that.termsLoading,_that.termsAccepted,_that.error,_that.codeNextSendAt,_that.effect);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -242,10 +220,10 @@ return $default(_that.email,_that.lookup,_that.busy,_that.passwordProblems,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String email,  AccountLookup? lookup,  bool busy,  Set<PasswordProblem> passwordProblems,  bool passwordServerChecked,  AuthError? error,  OtpChallenge? challenge,  SignOnEffect? effect)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String email,  bool busy,  bool signingIn,  String? termsVersion,  bool termsLoading,  bool termsAccepted,  AuthError? error,  DateTime? codeNextSendAt,  SignOnEffect? effect)?  $default,) {final _that = this;
 switch (_that) {
 case _SignOnState() when $default != null:
-return $default(_that.email,_that.lookup,_that.busy,_that.passwordProblems,_that.passwordServerChecked,_that.error,_that.challenge,_that.effect);case _:
+return $default(_that.email,_that.busy,_that.signingIn,_that.termsVersion,_that.termsLoading,_that.termsAccepted,_that.error,_that.codeNextSendAt,_that.effect);case _:
   return null;
 
 }
@@ -257,24 +235,20 @@ return $default(_that.email,_that.lookup,_that.busy,_that.passwordProblems,_that
 
 
 class _SignOnState implements SignOnState {
-  const _SignOnState({this.email = '', this.lookup, this.busy = false,  Set<PasswordProblem> passwordProblems = const <PasswordProblem>{}, this.passwordServerChecked = false, this.error, this.challenge, this.effect}): _passwordProblems = passwordProblems;
+  const _SignOnState({this.email = '', this.busy = false, this.signingIn = false, this.termsVersion, this.termsLoading = false, this.termsAccepted = false, this.error, this.codeNextSendAt, this.effect});
   
 
 @override@JsonKey() final  String email;
-@override final  AccountLookup? lookup;
 @override@JsonKey() final  bool busy;
- final  Set<PasswordProblem> _passwordProblems;
-@override@JsonKey() Set<PasswordProblem> get passwordProblems {
-  if (_passwordProblems is EqualUnmodifiableSetView) return _passwordProblems;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableSetView(_passwordProblems);
-}
-
-/// True once the server has confirmed the checklist (not just local rules).
-@override@JsonKey() final  bool passwordServerChecked;
+/// A sign-in succeeded and the app is moving on: the full-screen transition.
+@override@JsonKey() final  bool signingIn;
+@override final  String? termsVersion;
+@override@JsonKey() final  bool termsLoading;
+@override@JsonKey() final  bool termsAccepted;
 @override final  AuthError? error;
-/// The code sent by sign-up, so the code screen can start its countdown.
-@override final  OtpChallenge? challenge;
+/// When another code may be asked for, so the code screen can start its
+/// countdown. Set when the code was sent (or was already sent).
+@override final  DateTime? codeNextSendAt;
 @override final  SignOnEffect? effect;
 
 /// Create a copy of SignOnState
@@ -287,18 +261,18 @@ _$SignOnStateCopyWith<_SignOnState> get copyWith => __$SignOnStateCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SignOnState&&(identical(other.email, email) || other.email == email)&&(identical(other.lookup, lookup) || other.lookup == lookup)&&(identical(other.busy, busy) || other.busy == busy)&&const DeepCollectionEquality().equals(other.passwordProblems, _passwordProblems)&&(identical(other.passwordServerChecked, passwordServerChecked) || other.passwordServerChecked == passwordServerChecked)&&(identical(other.error, error) || other.error == error)&&(identical(other.challenge, challenge) || other.challenge == challenge)&&(identical(other.effect, effect) || other.effect == effect));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SignOnState&&(identical(other.email, email) || other.email == email)&&(identical(other.busy, busy) || other.busy == busy)&&(identical(other.signingIn, signingIn) || other.signingIn == signingIn)&&(identical(other.termsVersion, termsVersion) || other.termsVersion == termsVersion)&&(identical(other.termsLoading, termsLoading) || other.termsLoading == termsLoading)&&(identical(other.termsAccepted, termsAccepted) || other.termsAccepted == termsAccepted)&&(identical(other.error, error) || other.error == error)&&(identical(other.codeNextSendAt, codeNextSendAt) || other.codeNextSendAt == codeNextSendAt)&&(identical(other.effect, effect) || other.effect == effect));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,email,lookup,busy,const DeepCollectionEquality().hash(_passwordProblems),passwordServerChecked,error,challenge,effect);
+    return Object.hash(runtimeType,email,busy,signingIn,termsVersion,termsLoading,termsAccepted,error,codeNextSendAt,effect);
 }
 
 @override
 String toString() {
-    return 'SignOnState(email: $email, lookup: $lookup, busy: $busy, passwordProblems: $passwordProblems, passwordServerChecked: $passwordServerChecked, error: $error, challenge: $challenge, effect: $effect)';
+    return 'SignOnState(email: $email, busy: $busy, signingIn: $signingIn, termsVersion: $termsVersion, termsLoading: $termsLoading, termsAccepted: $termsAccepted, error: $error, codeNextSendAt: $codeNextSendAt, effect: $effect)';
 }
 
 
@@ -309,11 +283,11 @@ abstract mixin class _$SignOnStateCopyWith<$Res> implements $SignOnStateCopyWith
   factory _$SignOnStateCopyWith(_SignOnState value, $Res Function(_SignOnState) _then) = __$SignOnStateCopyWithImpl;
 @override @useResult
 $Res call({
- String email, AccountLookup? lookup, bool busy, Set<PasswordProblem> passwordProblems, bool passwordServerChecked, AuthError? error, OtpChallenge? challenge, SignOnEffect? effect
+ String email, bool busy, bool signingIn, String? termsVersion, bool termsLoading, bool termsAccepted, AuthError? error, DateTime? codeNextSendAt, SignOnEffect? effect
 });
 
 
-@override $AccountLookupCopyWith<$Res>? get lookup;@override $OtpChallengeCopyWith<$Res>? get challenge;@override $SignOnEffectCopyWith<$Res>? get effect;
+@override $SignOnEffectCopyWith<$Res>? get effect;
 
 }
 /// @nodoc
@@ -326,45 +300,22 @@ class __$SignOnStateCopyWithImpl<$Res>
 
 /// Create a copy of SignOnState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? email = null,Object? lookup = freezed,Object? busy = null,Object? passwordProblems = null,Object? passwordServerChecked = null,Object? error = freezed,Object? challenge = freezed,Object? effect = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? email = null,Object? busy = null,Object? signingIn = null,Object? termsVersion = freezed,Object? termsLoading = null,Object? termsAccepted = null,Object? error = freezed,Object? codeNextSendAt = freezed,Object? effect = freezed,}) {
   return _then(_SignOnState(
 email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
-as String,lookup: freezed == lookup ? _self.lookup : lookup // ignore: cast_nullable_to_non_nullable
-as AccountLookup?,busy: null == busy ? _self.busy : busy // ignore: cast_nullable_to_non_nullable
-as bool,passwordProblems: null == passwordProblems ? _self._passwordProblems : passwordProblems // ignore: cast_nullable_to_non_nullable
-as Set<PasswordProblem>,passwordServerChecked: null == passwordServerChecked ? _self.passwordServerChecked : passwordServerChecked // ignore: cast_nullable_to_non_nullable
+as String,busy: null == busy ? _self.busy : busy // ignore: cast_nullable_to_non_nullable
+as bool,signingIn: null == signingIn ? _self.signingIn : signingIn // ignore: cast_nullable_to_non_nullable
+as bool,termsVersion: freezed == termsVersion ? _self.termsVersion : termsVersion // ignore: cast_nullable_to_non_nullable
+as String?,termsLoading: null == termsLoading ? _self.termsLoading : termsLoading // ignore: cast_nullable_to_non_nullable
+as bool,termsAccepted: null == termsAccepted ? _self.termsAccepted : termsAccepted // ignore: cast_nullable_to_non_nullable
 as bool,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
-as AuthError?,challenge: freezed == challenge ? _self.challenge : challenge // ignore: cast_nullable_to_non_nullable
-as OtpChallenge?,effect: freezed == effect ? _self.effect : effect // ignore: cast_nullable_to_non_nullable
+as AuthError?,codeNextSendAt: freezed == codeNextSendAt ? _self.codeNextSendAt : codeNextSendAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,effect: freezed == effect ? _self.effect : effect // ignore: cast_nullable_to_non_nullable
 as SignOnEffect?,
   ));
 }
 
 /// Create a copy of SignOnState
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$AccountLookupCopyWith<$Res>? get lookup {
-    if (_self.lookup == null) {
-    return null;
-  }
-
-  return $AccountLookupCopyWith<$Res>(_self.lookup!, (value) {
-    return _then(_self.copyWith(lookup: value));
-  });
-}/// Create a copy of SignOnState
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$OtpChallengeCopyWith<$Res>? get challenge {
-    if (_self.challenge == null) {
-    return null;
-  }
-
-  return $OtpChallengeCopyWith<$Res>(_self.challenge!, (value) {
-    return _then(_self.copyWith(challenge: value));
-  });
-}/// Create a copy of SignOnState
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')

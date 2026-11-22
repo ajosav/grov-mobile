@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 
 import '../error/failure.dart';
 import 'failure_mapper.dart';
+import 'http_log_interceptor.dart';
 
 // ignore: use_primary_constructors (no constructor by design: interface)
 abstract interface class TokenProvider {
@@ -72,10 +73,5 @@ class FailureInterceptor() extends Interceptor {
   }
 }
 
-Interceptor? debugLogInterceptor() => kDebugMode
-    ? LogInterceptor(
-        requestBody: false,
-        responseBody: false,
-        logPrint: (o) => debugPrint('$o'),
-      )
-    : null;
+Interceptor? debugLogInterceptor() =>
+    kDebugMode ? HttpLogInterceptor((line) => debugPrint(line)) : null;

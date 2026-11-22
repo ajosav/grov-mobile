@@ -5,20 +5,6 @@ import 'package:material_ui/material_ui.dart';
 import '../theme/app_performance.dart';
 import '../theme/app_tokens.dart' hide formatNaira;
 
-/// Frosted glass card, 24px radius, in the style of iOS glass: a translucent
-/// body, a soft light on the top-left corner, a thin specular rim that is
-/// brightest at the top-left and bottom-right edges, an inner highlight and
-/// edge, and two shadows (a soft one that lifts the card and a tight one that
-/// anchors it).
-///
-/// All of it is cheap, static painting: no shader, no refraction, nothing that
-/// animates. Cards carry no blur by default. Pass [blur] only for overlays, at
-/// most three per screen. Without blur support (low-end, high contrast) it
-/// falls back to the solid `glassStrong` fill. On a low-end phone the large
-/// soft shadow is skipped too.
-///
-/// Colours come from the glass tokens (`glass`, `glassStrong`, `glassStroke`,
-/// `glassEdge`), so dark theme follows with no extra work.
 class const GlassCard({
   required final Widget child,
   final bool blur = false,
@@ -45,8 +31,6 @@ class const GlassCard({
           highlight: c.glassStroke,
           edge: c.glassEdge,
         ),
-        // Over the content, but only along the edges, which it never reaches:
-        // the specular rim.
         foregroundPainter: _GlassRimPainter(
           radius: radius,
           highlight: c.glassStroke,
@@ -65,9 +49,6 @@ class const GlassCard({
           )
         : surface;
 
-    // The shadows paint outside the card, so they sit under the clip above.
-    // A repaint boundary keeps the blurred shadow from being redrawn each time
-    // something else on the page repaints (a field being typed in, say).
     return RepaintBoundary(
       child: CustomPaint(
         painter: _GlassShadowPainter(
@@ -84,9 +65,6 @@ class const GlassCard({
 Color _scale(Color color, double factor) =>
     color.withValues(alpha: (color.a * factor).clamp(0.0, 1.0));
 
-/// Figma "Glass/Card" drop shadows: 0/8/32 and 0/1/2, drawn only **outside**
-/// the card (as a CSS box shadow is), so a translucent card is not darkened
-/// from behind.
 class const _GlassShadowPainter({
   required final double radius,
   required final Color color,
@@ -129,9 +107,6 @@ class const _GlassShadowPainter({
       old.radius != radius || old.color != color || old.soft != soft;
 }
 
-/// Behind the content: a soft light in the top-left corner and along the top,
-/// then Figma's two inner shadows (a light one top-left, a dark one
-/// bottom-right) that make the body read as thick.
 class const _GlassLightPainter({
   required final double radius,
   required final Color highlight,
@@ -194,9 +169,6 @@ class const _GlassLightPainter({
       old.radius != radius || old.highlight != highlight || old.edge != edge;
 }
 
-/// The specular rim: a thin line round the card, brightest at the top-left and
-/// bottom-right and fading to a faint line in between, as light catches the
-/// edge of a glass pane.
 class const _GlassRimPainter({
   required final double radius,
   required final Color highlight,

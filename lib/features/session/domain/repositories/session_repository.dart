@@ -8,6 +8,10 @@ abstract interface class SessionRepository {
 
   Future<Result<void>> save(Session session);
 
+  /// Tells the server to end this session. Needs the stored tokens, so call it
+  /// before [clear]. A failure here must not stop a local sign-out.
+  Future<Result<void>> revoke();
+
   /// Signs out locally: clears the stored tokens.
   Future<Result<void>> clear();
 

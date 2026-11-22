@@ -115,6 +115,7 @@ class _PhoneViewState() extends State<PhoneView> {
             builder: (context, _) => AppButton(
               label: l10n.authContinue,
               loading: state.busy,
+              loadingLabel: l10n.authBusySaving,
               onPressed: _phone.text.trim().isEmpty
                   ? null
                   : () => cubit.submit(_phone.text),

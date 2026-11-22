@@ -2,10 +2,8 @@ import 'dart:math';
 
 import 'package:app_mobile/core/platform/uuid_v7.dart';
 import 'package:app_mobile/features/auth/domain/email_format.dart';
-import 'package:app_mobile/features/auth/domain/entities/password_problem.dart';
 import 'package:app_mobile/features/auth/domain/mask_email.dart';
 import 'package:app_mobile/features/auth/domain/nigerian_phone.dart';
-import 'package:app_mobile/features/auth/domain/password_policy.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -26,24 +24,6 @@ void main() {
       expect(normalizeNigerianPhone('08031234567890'), isNull); // too long
       expect(normalizeNigerianPhone('0603 123 4567'), isNull); // not 7/8/9
       expect(normalizeNigerianPhone('abc'), isNull);
-    });
-  });
-
-  group('localPasswordProblems', () {
-    test('short and symbol-less', () {
-      expect(localPasswordProblems('abc'), {
-        PasswordProblem.tooShort,
-        PasswordProblem.noSymbol,
-      });
-    });
-    test('long but no symbol', () {
-      expect(localPasswordProblems('abcdefgh1'), {PasswordProblem.noSymbol});
-    });
-    test('short but with a symbol', () {
-      expect(localPasswordProblems('ab!'), {PasswordProblem.tooShort});
-    });
-    test('good enough locally', () {
-      expect(localPasswordProblems('abcdefg!'), isEmpty);
     });
   });
 

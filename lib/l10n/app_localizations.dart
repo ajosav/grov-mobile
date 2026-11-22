@@ -292,36 +292,6 @@ abstract class AppLocalizations {
   /// **'Change'**
   String get authChange;
 
-  /// No description provided for @authLogIn.
-  ///
-  /// In en, this message translates to:
-  /// **'Log in'**
-  String get authLogIn;
-
-  /// No description provided for @authPasswordLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Password'**
-  String get authPasswordLabel;
-
-  /// No description provided for @authPasswordHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Your password'**
-  String get authPasswordHint;
-
-  /// No description provided for @authShowPassword.
-  ///
-  /// In en, this message translates to:
-  /// **'Show password'**
-  String get authShowPassword;
-
-  /// No description provided for @authHidePassword.
-  ///
-  /// In en, this message translates to:
-  /// **'Hide password'**
-  String get authHidePassword;
-
   /// No description provided for @authTermsNotice.
   ///
   /// In en, this message translates to:
@@ -339,6 +309,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Privacy Policy'**
   String get authPrivacyLink;
+
+  /// No description provided for @authTermsAcceptance.
+  ///
+  /// In en, this message translates to:
+  /// **'I agree to the Terms and Conditions.'**
+  String get authTermsAcceptance;
+
+  /// No description provided for @authTermsLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking the current terms…'**
+  String get authTermsLoading;
 
   /// No description provided for @authGoogleLabel.
   ///
@@ -370,53 +352,17 @@ abstract class AppLocalizations {
   /// **'Try again'**
   String get authTryAgain;
 
-  /// No description provided for @passwordTitle.
+  /// No description provided for @authRetryCountdown.
   ///
   /// In en, this message translates to:
-  /// **'Welcome back'**
-  String get passwordTitle;
-
-  /// No description provided for @passwordSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter your password to log in.'**
-  String get passwordSubtitle;
-
-  /// No description provided for @authForgotLink.
-  ///
-  /// In en, this message translates to:
-  /// **'Forgot password?'**
-  String get authForgotLink;
-
-  /// No description provided for @errorWrongPassword.
-  ///
-  /// In en, this message translates to:
-  /// **'That password isn’t right. Try again, or reset it.'**
-  String get errorWrongPassword;
+  /// **'Try again in {time}'**
+  String authRetryCountdown(Object time);
 
   /// No description provided for @errorAccountLocked.
   ///
   /// In en, this message translates to:
-  /// **'Too many tries. Try again later, or reset your password.'**
+  /// **'Too many tries. Try again later.'**
   String get errorAccountLocked;
-
-  /// No description provided for @errorSocialOnly.
-  ///
-  /// In en, this message translates to:
-  /// **'This email signs in with Google or Apple.'**
-  String get errorSocialOnly;
-
-  /// No description provided for @joinTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Let’s set you up'**
-  String get joinTitle;
-
-  /// No description provided for @joinSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'A few details and you are in.'**
-  String get joinSubtitle;
 
   /// No description provided for @authFirstNameLabel.
   ///
@@ -442,30 +388,6 @@ abstract class AppLocalizations {
   /// **'Type 0803… or 803…'**
   String get authPhoneHelper;
 
-  /// No description provided for @authCheckLength.
-  ///
-  /// In en, this message translates to:
-  /// **'8 or more characters'**
-  String get authCheckLength;
-
-  /// No description provided for @authCheckSymbol.
-  ///
-  /// In en, this message translates to:
-  /// **'Includes a symbol, like ! or #'**
-  String get authCheckSymbol;
-
-  /// No description provided for @authCheckCommon.
-  ///
-  /// In en, this message translates to:
-  /// **'Not a common password'**
-  String get authCheckCommon;
-
-  /// No description provided for @authCheckCommonFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'Not a common password. Try another.'**
-  String get authCheckCommonFailed;
-
   /// No description provided for @authCreateAccount.
   ///
   /// In en, this message translates to:
@@ -481,7 +403,7 @@ abstract class AppLocalizations {
   /// No description provided for @errorPhoneTaken.
   ///
   /// In en, this message translates to:
-  /// **'This number is already on an account. Log in with that email, or use a different number.'**
+  /// **'This number is already on an account. Use a different number, or sign in with the email on that account.'**
   String get errorPhoneTaken;
 
   /// No description provided for @errorPhoneInvalid.
@@ -489,12 +411,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter a valid Nigerian mobile number.'**
   String get errorPhoneInvalid;
-
-  /// No description provided for @errorPasswordWeak.
-  ///
-  /// In en, this message translates to:
-  /// **'Use at least 8 characters with a symbol.'**
-  String get errorPasswordWeak;
 
   /// No description provided for @errorInvalidEmail.
   ///
@@ -511,13 +427,13 @@ abstract class AppLocalizations {
   /// No description provided for @codeSentTo.
   ///
   /// In en, this message translates to:
-  /// **'We sent a 6-digit code to'**
+  /// **'We sent a 6-digit code to your email'**
   String get codeSentTo;
 
   /// No description provided for @codeChangeEmail.
   ///
   /// In en, this message translates to:
-  /// **'Change email'**
+  /// **'Use a different email'**
   String get codeChangeEmail;
 
   /// No description provided for @codeResendIn.
@@ -585,174 +501,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Taking you in…'**
   String get codeTakingYouIn;
-
-  /// No description provided for @changeEmailTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Change your email'**
-  String get changeEmailTitle;
-
-  /// No description provided for @changeEmailSave.
-  ///
-  /// In en, this message translates to:
-  /// **'Send a new code'**
-  String get changeEmailSave;
-
-  /// No description provided for @changeEmailCancel.
-  ///
-  /// In en, this message translates to:
-  /// **'Cancel'**
-  String get changeEmailCancel;
-
-  /// No description provided for @forgotTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Reset your password'**
-  String get forgotTitle;
-
-  /// No description provided for @forgotSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter your email and we’ll send you a link.'**
-  String get forgotSubtitle;
-
-  /// No description provided for @forgotSend.
-  ///
-  /// In en, this message translates to:
-  /// **'Send reset link'**
-  String get forgotSend;
-
-  /// No description provided for @forgotBack.
-  ///
-  /// In en, this message translates to:
-  /// **'Back to log in'**
-  String get forgotBack;
-
-  /// No description provided for @forgotSentBody.
-  ///
-  /// In en, this message translates to:
-  /// **'We sent a reset link to {email}. It works for 30 minutes.'**
-  String forgotSentBody(String email);
-
-  /// No description provided for @forgotResendIn.
-  ///
-  /// In en, this message translates to:
-  /// **'Resend link in {time}'**
-  String forgotResendIn(String time);
-
-  /// No description provided for @forgotOpenMail.
-  ///
-  /// In en, this message translates to:
-  /// **'Open email app'**
-  String get forgotOpenMail;
-
-  /// No description provided for @forgotOpenMailHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Open your email app and look for our message.'**
-  String get forgotOpenMailHint;
-
-  /// No description provided for @forgotDidntGet.
-  ///
-  /// In en, this message translates to:
-  /// **'I didn’t get it'**
-  String get forgotDidntGet;
-
-  /// No description provided for @helpTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Didn’t get the email?'**
-  String get helpTitle;
-
-  /// No description provided for @helpSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Try these, then send the link again.'**
-  String get helpSubtitle;
-
-  /// No description provided for @helpTipSpam.
-  ///
-  /// In en, this message translates to:
-  /// **'Look in spam or promotions.'**
-  String get helpTipSpam;
-
-  /// No description provided for @helpTipAddress.
-  ///
-  /// In en, this message translates to:
-  /// **'Check the address is right: {email}'**
-  String helpTipAddress(String email);
-
-  /// No description provided for @helpTipNetwork.
-  ///
-  /// In en, this message translates to:
-  /// **'On a weak network it can take a few minutes.'**
-  String get helpTipNetwork;
-
-  /// No description provided for @helpSendAgain.
-  ///
-  /// In en, this message translates to:
-  /// **'Send the link again'**
-  String get helpSendAgain;
-
-  /// No description provided for @helpDifferentEmail.
-  ///
-  /// In en, this message translates to:
-  /// **'Use a different email'**
-  String get helpDifferentEmail;
-
-  /// No description provided for @helpContactSupport.
-  ///
-  /// In en, this message translates to:
-  /// **'Contact support'**
-  String get helpContactSupport;
-
-  /// No description provided for @helpContactSoon.
-  ///
-  /// In en, this message translates to:
-  /// **'Support contact is not set up yet.'**
-  String get helpContactSoon;
-
-  /// No description provided for @resetTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Set a new password'**
-  String get resetTitle;
-
-  /// No description provided for @resetSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose one you have not used on {brand} before.'**
-  String resetSubtitle(String brand);
-
-  /// No description provided for @resetNewPasswordLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'New password'**
-  String get resetNewPasswordLabel;
-
-  /// No description provided for @resetSave.
-  ///
-  /// In en, this message translates to:
-  /// **'Save password'**
-  String get resetSave;
-
-  /// No description provided for @linkExpiredTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'This link has expired'**
-  String get linkExpiredTitle;
-
-  /// No description provided for @linkExpiredBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Reset links work once and last 30 minutes. Send a new one to carry on.'**
-  String get linkExpiredBody;
-
-  /// No description provided for @linkSendNew.
-  ///
-  /// In en, this message translates to:
-  /// **'Send a new link'**
-  String get linkSendNew;
 
   /// No description provided for @phoneTitle.
   ///
@@ -823,8 +571,278 @@ abstract class AppLocalizations {
   /// No description provided for @errorTermsStale.
   ///
   /// In en, this message translates to:
-  /// **'The terms have changed. Update the app to continue.'**
+  /// **'The terms have changed. Refresh them and agree to continue.'**
   String get errorTermsStale;
+
+  /// No description provided for @errorPhoneAlreadySet.
+  ///
+  /// In en, this message translates to:
+  /// **'This account already has a phone number. You can change it in settings.'**
+  String get errorPhoneAlreadySet;
+
+  /// No description provided for @homeGreetingMorning.
+  ///
+  /// In en, this message translates to:
+  /// **'Good morning, {name}'**
+  String homeGreetingMorning(String name);
+
+  /// No description provided for @homeGreetingAfternoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Good afternoon, {name}'**
+  String homeGreetingAfternoon(String name);
+
+  /// No description provided for @homeGreetingEvening.
+  ///
+  /// In en, this message translates to:
+  /// **'Good evening, {name}'**
+  String homeGreetingEvening(String name);
+
+  /// No description provided for @homeEncouragement.
+  ///
+  /// In en, this message translates to:
+  /// **'You’re making great progress!'**
+  String get homeEncouragement;
+
+  /// No description provided for @homeNotificationsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get homeNotificationsLabel;
+
+  /// No description provided for @homeWeekProgressTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This week’s progress'**
+  String get homeWeekProgressTitle;
+
+  /// No description provided for @homeBudgetUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget used'**
+  String get homeBudgetUsed;
+
+  /// No description provided for @homeBudgetPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}%'**
+  String homeBudgetPercent(int percent);
+
+  /// No description provided for @homeMealsCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Meals completed'**
+  String get homeMealsCompleted;
+
+  /// No description provided for @homeMealsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} / {total}'**
+  String homeMealsCount(int done, int total);
+
+  /// No description provided for @homeMealIdeasTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Today’s meal ideas'**
+  String get homeMealIdeasTitle;
+
+  /// No description provided for @homeViewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View all'**
+  String get homeViewAll;
+
+  /// No description provided for @mealTimeBreakfast.
+  ///
+  /// In en, this message translates to:
+  /// **'Breakfast'**
+  String get mealTimeBreakfast;
+
+  /// No description provided for @mealTimeLunch.
+  ///
+  /// In en, this message translates to:
+  /// **'Lunch'**
+  String get mealTimeLunch;
+
+  /// No description provided for @mealTimeDinner.
+  ///
+  /// In en, this message translates to:
+  /// **'Dinner'**
+  String get mealTimeDinner;
+
+  /// No description provided for @mealTimeSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Snack'**
+  String get mealTimeSnack;
+
+  /// No description provided for @homeMealSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{mealTime} · meal idea'**
+  String homeMealSubtitle(String mealTime);
+
+  /// No description provided for @homeCooked.
+  ///
+  /// In en, this message translates to:
+  /// **'Cooked'**
+  String get homeCooked;
+
+  /// No description provided for @homeStockListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock list'**
+  String get homeStockListTitle;
+
+  /// No description provided for @homeStockListSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 item still to buy} other{{count} items still to buy}} · {amount}'**
+  String homeStockListSummary(int count, String amount);
+
+  /// No description provided for @homeQuickActionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick actions'**
+  String get homeQuickActionsTitle;
+
+  /// No description provided for @homeActionViewPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'View plan'**
+  String get homeActionViewPlan;
+
+  /// No description provided for @homeActionBulkCooked.
+  ///
+  /// In en, this message translates to:
+  /// **'Bulk cooked food'**
+  String get homeActionBulkCooked;
+
+  /// No description provided for @homeActionSharingSlot.
+  ///
+  /// In en, this message translates to:
+  /// **'Book a sharing slot'**
+  String get homeActionSharingSlot;
+
+  /// No description provided for @homeActionAdjustBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjust budget'**
+  String get homeActionAdjustBudget;
+
+  /// No description provided for @homeLoadFailedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Home did not load'**
+  String get homeLoadFailedTitle;
+
+  /// No description provided for @homeLoadFailedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your connection and try again.'**
+  String get homeLoadFailedBody;
+
+  /// No description provided for @homeRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get homeRetry;
+
+  /// No description provided for @loadingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading'**
+  String get loadingLabel;
+
+  /// No description provided for @homeLoadingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading your home'**
+  String get homeLoadingLabel;
+
+  /// No description provided for @commonRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get commonRetry;
+
+  /// No description provided for @pagedLoadFailedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This did not load'**
+  String get pagedLoadFailedTitle;
+
+  /// No description provided for @pagedLoadFailedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your connection and try again.'**
+  String get pagedLoadFailedBody;
+
+  /// No description provided for @pagedLoadMoreFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load more.'**
+  String get pagedLoadMoreFailed;
+
+  /// No description provided for @authBusySigningIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Signing in…'**
+  String get authBusySigningIn;
+
+  /// No description provided for @authBusyCreating.
+  ///
+  /// In en, this message translates to:
+  /// **'Creating your account…'**
+  String get authBusyCreating;
+
+  /// No description provided for @authBusyVerifying.
+  ///
+  /// In en, this message translates to:
+  /// **'Verifying…'**
+  String get authBusyVerifying;
+
+  /// No description provided for @authBusySaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving…'**
+  String get authBusySaving;
+
+  /// No description provided for @authBusySending.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending…'**
+  String get authBusySending;
+
+  /// No description provided for @startingUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting up'**
+  String get startingUp;
+
+  /// No description provided for @profileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us about you'**
+  String get profileTitle;
+
+  /// No description provided for @profileSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A few details and you are in.'**
+  String get profileSubtitle;
+
+  /// No description provided for @errorTicketExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'That sign-up timed out. Enter your email to start again.'**
+  String get errorTicketExpired;
+
+  /// No description provided for @errorAccountSuspended.
+  ///
+  /// In en, this message translates to:
+  /// **'This account is suspended. Contact support.'**
+  String get errorAccountSuspended;
 }
 
 class _AppLocalizationsDelegate

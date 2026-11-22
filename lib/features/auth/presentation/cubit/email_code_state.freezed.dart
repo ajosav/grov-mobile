@@ -15,8 +15,11 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$EmailCodeState {
 
- String get email; String get code; EmailCodeStatus get status; AuthError? get error; DateTime? get nextSendAt; bool get resending;/// Set when the code was accepted; the page passes it to the session.
- Session? get verifiedSession;
+ String get email; String get code; EmailCodeStatus get status; AuthError? get error; DateTime? get nextSendAt; bool get resending;/// Set when the code was accepted for an existing account; the page passes
+/// it to the session.
+ Session? get verifiedSession;/// Set when the code was accepted for a new address; the page opens the
+/// profile screen with it.
+ RegistrationTicket? get profileTicket;
 /// Create a copy of EmailCodeState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,20 +31,20 @@ $EmailCodeStateCopyWith<EmailCodeState> get copyWith => _$EmailCodeStateCopyWith
 @override
 bool operator ==(Object other) {
   final _this = this as EmailCodeState;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EmailCodeState&&(identical(other.email, _this.email) || other.email == _this.email)&&(identical(other.code, _this.code) || other.code == _this.code)&&(identical(other.status, _this.status) || other.status == _this.status)&&(identical(other.error, _this.error) || other.error == _this.error)&&(identical(other.nextSendAt, _this.nextSendAt) || other.nextSendAt == _this.nextSendAt)&&(identical(other.resending, _this.resending) || other.resending == _this.resending)&&(identical(other.verifiedSession, _this.verifiedSession) || other.verifiedSession == _this.verifiedSession));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EmailCodeState&&(identical(other.email, _this.email) || other.email == _this.email)&&(identical(other.code, _this.code) || other.code == _this.code)&&(identical(other.status, _this.status) || other.status == _this.status)&&(identical(other.error, _this.error) || other.error == _this.error)&&(identical(other.nextSendAt, _this.nextSendAt) || other.nextSendAt == _this.nextSendAt)&&(identical(other.resending, _this.resending) || other.resending == _this.resending)&&(identical(other.verifiedSession, _this.verifiedSession) || other.verifiedSession == _this.verifiedSession)&&(identical(other.profileTicket, _this.profileTicket) || other.profileTicket == _this.profileTicket));
 }
 
 
 @override
 int get hashCode {
   final _this = this as EmailCodeState;
-  return Object.hash(runtimeType,_this.email,_this.code,_this.status,_this.error,_this.nextSendAt,_this.resending,_this.verifiedSession);
+  return Object.hash(runtimeType,_this.email,_this.code,_this.status,_this.error,_this.nextSendAt,_this.resending,_this.verifiedSession,_this.profileTicket);
 }
 
 @override
 String toString() {
   final _this = this as EmailCodeState;
-  return 'EmailCodeState(email: ${_this.email}, code: ${_this.code}, status: ${_this.status}, error: ${_this.error}, nextSendAt: ${_this.nextSendAt}, resending: ${_this.resending}, verifiedSession: ${_this.verifiedSession})';
+  return 'EmailCodeState(email: ${_this.email}, code: ${_this.code}, status: ${_this.status}, error: ${_this.error}, nextSendAt: ${_this.nextSendAt}, resending: ${_this.resending}, verifiedSession: ${_this.verifiedSession}, profileTicket: ${_this.profileTicket})';
 }
 
 
@@ -52,11 +55,11 @@ abstract mixin class $EmailCodeStateCopyWith<$Res>  {
   factory $EmailCodeStateCopyWith(EmailCodeState value, $Res Function(EmailCodeState) _then) = _$EmailCodeStateCopyWithImpl;
 @useResult
 $Res call({
- String email, String code, EmailCodeStatus status, AuthError? error, DateTime? nextSendAt, bool resending, Session? verifiedSession
+ String email, String code, EmailCodeStatus status, AuthError? error, DateTime? nextSendAt, bool resending, Session? verifiedSession, RegistrationTicket? profileTicket
 });
 
 
-$SessionCopyWith<$Res>? get verifiedSession;
+$SessionCopyWith<$Res>? get verifiedSession;$RegistrationTicketCopyWith<$Res>? get profileTicket;
 
 }
 /// @nodoc
@@ -69,7 +72,7 @@ class _$EmailCodeStateCopyWithImpl<$Res>
 
 /// Create a copy of EmailCodeState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? email = null,Object? code = null,Object? status = null,Object? error = freezed,Object? nextSendAt = freezed,Object? resending = null,Object? verifiedSession = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? email = null,Object? code = null,Object? status = null,Object? error = freezed,Object? nextSendAt = freezed,Object? resending = null,Object? verifiedSession = freezed,Object? profileTicket = freezed,}) {
   return _then(EmailCodeState(
 email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
@@ -78,7 +81,8 @@ as EmailCodeStatus,error: freezed == error ? _self.error : error // ignore: cast
 as AuthError?,nextSendAt: freezed == nextSendAt ? _self.nextSendAt : nextSendAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,resending: null == resending ? _self.resending : resending // ignore: cast_nullable_to_non_nullable
 as bool,verifiedSession: freezed == verifiedSession ? _self.verifiedSession : verifiedSession // ignore: cast_nullable_to_non_nullable
-as Session?,
+as Session?,profileTicket: freezed == profileTicket ? _self.profileTicket : profileTicket // ignore: cast_nullable_to_non_nullable
+as RegistrationTicket?,
   ));
 }
 /// Create a copy of EmailCodeState
@@ -92,6 +96,18 @@ $SessionCopyWith<$Res>? get verifiedSession {
 
   return $SessionCopyWith<$Res>(_self.verifiedSession!, (value) {
     return _then(_self.copyWith(verifiedSession: value));
+  });
+}/// Create a copy of EmailCodeState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$RegistrationTicketCopyWith<$Res>? get profileTicket {
+    if (_self.profileTicket == null) {
+    return null;
+  }
+
+  return $RegistrationTicketCopyWith<$Res>(_self.profileTicket!, (value) {
+    return _then(_self.copyWith(profileTicket: value));
   });
 }
 }
@@ -175,10 +191,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String email,  String code,  EmailCodeStatus status,  AuthError? error,  DateTime? nextSendAt,  bool resending,  Session? verifiedSession)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String email,  String code,  EmailCodeStatus status,  AuthError? error,  DateTime? nextSendAt,  bool resending,  Session? verifiedSession,  RegistrationTicket? profileTicket)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _EmailCodeState() when $default != null:
-return $default(_that.email,_that.code,_that.status,_that.error,_that.nextSendAt,_that.resending,_that.verifiedSession);case _:
+return $default(_that.email,_that.code,_that.status,_that.error,_that.nextSendAt,_that.resending,_that.verifiedSession,_that.profileTicket);case _:
   return orElse();
 
 }
@@ -196,10 +212,10 @@ return $default(_that.email,_that.code,_that.status,_that.error,_that.nextSendAt
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String email,  String code,  EmailCodeStatus status,  AuthError? error,  DateTime? nextSendAt,  bool resending,  Session? verifiedSession)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String email,  String code,  EmailCodeStatus status,  AuthError? error,  DateTime? nextSendAt,  bool resending,  Session? verifiedSession,  RegistrationTicket? profileTicket)  $default,) {final _that = this;
 switch (_that) {
 case _EmailCodeState():
-return $default(_that.email,_that.code,_that.status,_that.error,_that.nextSendAt,_that.resending,_that.verifiedSession);case _:
+return $default(_that.email,_that.code,_that.status,_that.error,_that.nextSendAt,_that.resending,_that.verifiedSession,_that.profileTicket);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -216,10 +232,10 @@ return $default(_that.email,_that.code,_that.status,_that.error,_that.nextSendAt
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String email,  String code,  EmailCodeStatus status,  AuthError? error,  DateTime? nextSendAt,  bool resending,  Session? verifiedSession)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String email,  String code,  EmailCodeStatus status,  AuthError? error,  DateTime? nextSendAt,  bool resending,  Session? verifiedSession,  RegistrationTicket? profileTicket)?  $default,) {final _that = this;
 switch (_that) {
 case _EmailCodeState() when $default != null:
-return $default(_that.email,_that.code,_that.status,_that.error,_that.nextSendAt,_that.resending,_that.verifiedSession);case _:
+return $default(_that.email,_that.code,_that.status,_that.error,_that.nextSendAt,_that.resending,_that.verifiedSession,_that.profileTicket);case _:
   return null;
 
 }
@@ -231,7 +247,7 @@ return $default(_that.email,_that.code,_that.status,_that.error,_that.nextSendAt
 
 
 class _EmailCodeState implements EmailCodeState {
-  const _EmailCodeState({required this.email, this.code = '', this.status = EmailCodeStatus.entering, this.error, this.nextSendAt, this.resending = false, this.verifiedSession});
+  const _EmailCodeState({required this.email, this.code = '', this.status = EmailCodeStatus.entering, this.error, this.nextSendAt, this.resending = false, this.verifiedSession, this.profileTicket});
   
 
 @override final  String email;
@@ -240,8 +256,12 @@ class _EmailCodeState implements EmailCodeState {
 @override final  AuthError? error;
 @override final  DateTime? nextSendAt;
 @override@JsonKey() final  bool resending;
-/// Set when the code was accepted; the page passes it to the session.
+/// Set when the code was accepted for an existing account; the page passes
+/// it to the session.
 @override final  Session? verifiedSession;
+/// Set when the code was accepted for a new address; the page opens the
+/// profile screen with it.
+@override final  RegistrationTicket? profileTicket;
 
 /// Create a copy of EmailCodeState
 /// with the given fields replaced by the non-null parameter values.
@@ -253,18 +273,18 @@ _$EmailCodeStateCopyWith<_EmailCodeState> get copyWith => __$EmailCodeStateCopyW
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _EmailCodeState&&(identical(other.email, email) || other.email == email)&&(identical(other.code, code) || other.code == code)&&(identical(other.status, status) || other.status == status)&&(identical(other.error, error) || other.error == error)&&(identical(other.nextSendAt, nextSendAt) || other.nextSendAt == nextSendAt)&&(identical(other.resending, resending) || other.resending == resending)&&(identical(other.verifiedSession, verifiedSession) || other.verifiedSession == verifiedSession));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _EmailCodeState&&(identical(other.email, email) || other.email == email)&&(identical(other.code, code) || other.code == code)&&(identical(other.status, status) || other.status == status)&&(identical(other.error, error) || other.error == error)&&(identical(other.nextSendAt, nextSendAt) || other.nextSendAt == nextSendAt)&&(identical(other.resending, resending) || other.resending == resending)&&(identical(other.verifiedSession, verifiedSession) || other.verifiedSession == verifiedSession)&&(identical(other.profileTicket, profileTicket) || other.profileTicket == profileTicket));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,email,code,status,error,nextSendAt,resending,verifiedSession);
+    return Object.hash(runtimeType,email,code,status,error,nextSendAt,resending,verifiedSession,profileTicket);
 }
 
 @override
 String toString() {
-    return 'EmailCodeState(email: $email, code: $code, status: $status, error: $error, nextSendAt: $nextSendAt, resending: $resending, verifiedSession: $verifiedSession)';
+    return 'EmailCodeState(email: $email, code: $code, status: $status, error: $error, nextSendAt: $nextSendAt, resending: $resending, verifiedSession: $verifiedSession, profileTicket: $profileTicket)';
 }
 
 
@@ -275,11 +295,11 @@ abstract mixin class _$EmailCodeStateCopyWith<$Res> implements $EmailCodeStateCo
   factory _$EmailCodeStateCopyWith(_EmailCodeState value, $Res Function(_EmailCodeState) _then) = __$EmailCodeStateCopyWithImpl;
 @override @useResult
 $Res call({
- String email, String code, EmailCodeStatus status, AuthError? error, DateTime? nextSendAt, bool resending, Session? verifiedSession
+ String email, String code, EmailCodeStatus status, AuthError? error, DateTime? nextSendAt, bool resending, Session? verifiedSession, RegistrationTicket? profileTicket
 });
 
 
-@override $SessionCopyWith<$Res>? get verifiedSession;
+@override $SessionCopyWith<$Res>? get verifiedSession;@override $RegistrationTicketCopyWith<$Res>? get profileTicket;
 
 }
 /// @nodoc
@@ -292,7 +312,7 @@ class __$EmailCodeStateCopyWithImpl<$Res>
 
 /// Create a copy of EmailCodeState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? email = null,Object? code = null,Object? status = null,Object? error = freezed,Object? nextSendAt = freezed,Object? resending = null,Object? verifiedSession = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? email = null,Object? code = null,Object? status = null,Object? error = freezed,Object? nextSendAt = freezed,Object? resending = null,Object? verifiedSession = freezed,Object? profileTicket = freezed,}) {
   return _then(_EmailCodeState(
 email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
@@ -301,7 +321,8 @@ as EmailCodeStatus,error: freezed == error ? _self.error : error // ignore: cast
 as AuthError?,nextSendAt: freezed == nextSendAt ? _self.nextSendAt : nextSendAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,resending: null == resending ? _self.resending : resending // ignore: cast_nullable_to_non_nullable
 as bool,verifiedSession: freezed == verifiedSession ? _self.verifiedSession : verifiedSession // ignore: cast_nullable_to_non_nullable
-as Session?,
+as Session?,profileTicket: freezed == profileTicket ? _self.profileTicket : profileTicket // ignore: cast_nullable_to_non_nullable
+as RegistrationTicket?,
   ));
 }
 
@@ -316,6 +337,18 @@ $SessionCopyWith<$Res>? get verifiedSession {
 
   return $SessionCopyWith<$Res>(_self.verifiedSession!, (value) {
     return _then(_self.copyWith(verifiedSession: value));
+  });
+}/// Create a copy of EmailCodeState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$RegistrationTicketCopyWith<$Res>? get profileTicket {
+    if (_self.profileTicket == null) {
+    return null;
+  }
+
+  return $RegistrationTicketCopyWith<$Res>(_self.profileTicket!, (value) {
+    return _then(_self.copyWith(profileTicket: value));
   });
 }
 }

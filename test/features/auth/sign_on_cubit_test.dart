@@ -1,306 +1,226 @@
 import 'package:app_mobile/core/error/failure.dart';
 import 'package:app_mobile/core/error/result.dart';
-import 'package:app_mobile/features/auth/domain/entities/account_lookup.dart';
-import 'package:app_mobile/features/auth/domain/entities/auth_provider.dart';
-import 'package:app_mobile/features/auth/domain/entities/otp_challenge.dart';
-import 'package:app_mobile/features/auth/domain/entities/password_check.dart';
-import 'package:app_mobile/features/auth/domain/entities/password_problem.dart';
 import 'package:app_mobile/features/auth/presentation/cubit/auth_error.dart';
 import 'package:app_mobile/features/auth/presentation/cubit/sign_on_cubit.dart';
 import 'package:app_mobile/features/auth/presentation/cubit/sign_on_effect.dart';
-import 'package:app_mobile/features/auth/presentation/cubit/sign_on_state.dart';
 import 'package:app_mobile/features/session/domain/entities/auth_gate.dart';
-import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/cubit_factories.dart';
 import '../../helpers/fake_auth_repository.dart';
-
-Matcher _state({bool? busy, AuthError? error, Object? effect}) =>
-    isA<SignOnState>()
-        .having((s) => s.busy, 'busy', busy ?? anything)
-        .having((s) => s.error, 'error', error ?? anything)
-        .having((s) => s.effect, 'effect', effect ?? anything);
 
 void main() {
   late FakeAuthRepository repo;
   setUp(() => repo = FakeAuthRepository());
 
   SignOnCubit build() => signOnCubitFor(repo);
+  final next = DateTime.utc(2026, 11, 22, 10, 1);
 
   group('continue with email', () {
-    blocTest<SignOnCubit, SignOnState>(
-      'a new email goes to join',
-      setUp: () => repo.lookupResult = const Result.ok(
-        AccountLookup(exists: false, hasPassword: false),
-      ),
-      build: build,
-      act: (c) async {
-        c.emailChanged('ngozi@example.com');
-        await c.continueWithEmail();
-      },
-      expect: () => [
-        _state(),
-        _state(busy: true),
-        _state(busy: false, effect: isA<SignOnToJoin>()),
-      ],
-      verify: (_) => expect(repo.calls, ['lookup:ngozi@example.com']),
-    );
+    test('a bad email is caught before the server', () async {
+      final c = build()..emailChanged('nope');
+      await c.continueWithEmail();
+      expect(c.state.error, AuthError.invalidEmail);
+      expect(repo.calls, isEmpty);
+      await c.close();
+    });
 
-    blocTest<SignOnCubit, SignOnState>(
-      'an email with a password goes to log-in',
-      setUp: () => repo.lookupResult = const Result.ok(
-        AccountLookup(exists: true, hasPassword: true),
-      ),
-      build: build,
-      act: (c) async {
-        c.emailChanged('ngozi@example.com');
-        await c.continueWithEmail();
-      },
-      expect: () => [
-        _state(),
-        _state(busy: true),
-        _state(effect: isA<SignOnToPassword>(), error: null),
-      ],
-    );
+    test('asks for the code and opens the code screen', () async {
+      repo.requestCodeResult = Result.ok(challengeAt(next));
+      final c = build()..emailChanged(' ngozi@example.com ');
+      await c.continueWithEmail();
+      expect(repo.calls, ['requestCode:ngozi@example.com']);
+      expect(c.state.busy, isFalse);
+      expect(c.state.codeNextSendAt, next);
+      expect(c.state.effect, const SignOnEffect.toCode());
+      await c.close();
+    });
 
-    blocTest<SignOnCubit, SignOnState>(
-      'a Google-only account is told so and goes nowhere',
-      setUp: () => repo.lookupResult = const Result.ok(
-        AccountLookup(
-          exists: true,
-          hasPassword: false,
-          providers: {AuthProvider.google},
-        ),
-      ),
-      build: build,
-      act: (c) async {
-        c.emailChanged('ngozi@example.com');
-        await c.continueWithEmail();
-      },
-      skip: 2,
-      expect: () => [_state(error: AuthError.socialOnly, effect: null)],
-    );
+    test('there is no lookup: a new and an existing address do the same', () async {
+      repo.requestCodeResult = Result.ok(challengeAt(next));
+      final a = build()..emailChanged('new@example.com');
+      final b = build()..emailChanged('old@example.com');
+      await a.continueWithEmail();
+      await b.continueWithEmail();
+      expect(a.state.effect, b.state.effect);
+      await a.close();
+      await b.close();
+    });
 
-    blocTest<SignOnCubit, SignOnState>(
-      'a bad email never reaches the server',
-      build: build,
-      act: (c) async {
-        c.emailChanged('nope');
-        await c.continueWithEmail();
-      },
-      skip: 1,
-      expect: () => [_state(error: AuthError.invalidEmail)],
-      verify: (_) => expect(repo.calls, isEmpty),
-    );
-
-    blocTest<SignOnCubit, SignOnState>(
-      'offline is reported as offline',
-      setUp: () => repo.lookupResult = const Result.err(OfflineFailure()),
-      build: build,
-      act: (c) async {
-        c.emailChanged('ngozi@example.com');
-        await c.continueWithEmail();
-      },
-      skip: 2,
-      expect: () => [_state(busy: false, error: AuthError.offline)],
-    );
-
-    blocTest<SignOnCubit, SignOnState>(
-      'a second tap while busy is ignored',
-      setUp: () => repo.lookupResult = const Result.ok(
-        AccountLookup(exists: false, hasPassword: false),
-      ),
-      build: build,
-      act: (c) async {
-        c.emailChanged('ngozi@example.com');
-        // Two taps in the same turn: the second must be dropped.
-        await Future.wait([c.continueWithEmail(), c.continueWithEmail()]);
-      },
-      verify: (_) => expect(repo.calls.length, 1),
-    );
-  });
-
-  group('log in', () {
-    blocTest<SignOnCubit, SignOnState>(
-      'success hands the session to the page as an effect',
-      setUp: () => repo.logInResult = Result.ok(outcomeWith(AuthGate.none)),
-      build: build,
-      seed: () => const SignOnState(email: 'ngozi@example.com'),
-      act: (c) => c.logIn('Secret!123'),
-      expect: () => [
-        _state(busy: true),
-        _state(busy: false, effect: isA<SignOnSignedIn>()),
-      ],
-    );
-
-    blocTest<SignOnCubit, SignOnState>(
-      'a wrong password (401) is a wrong password',
-      setUp: () => repo.logInResult = const Result.err(UnauthorizedFailure()),
-      build: build,
-      seed: () => const SignOnState(email: 'ngozi@example.com'),
-      act: (c) => c.logIn('nope'),
-      skip: 1,
-      expect: () => [_state(busy: false, error: AuthError.wrongPassword)],
-    );
-
-    blocTest<SignOnCubit, SignOnState>(
-      'a locked account (403) says locked',
-      setUp: () => repo.logInResult = const Result.err(ForbiddenFailure()),
-      build: build,
-      seed: () => const SignOnState(email: 'ngozi@example.com'),
-      act: (c) => c.logIn('x'),
-      skip: 1,
-      expect: () => [_state(error: AuthError.accountLocked)],
-    );
-
-    blocTest<SignOnCubit, SignOnState>(
-      'a step the app cannot do (no session) is not a sign-in',
-      setUp: () => repo.logInResult = const Result.ok(outcomeNoSession),
-      build: build,
-      seed: () => const SignOnState(email: 'ngozi@example.com'),
-      act: (c) => c.logIn('x'),
-      skip: 1,
-      expect: () => [_state(error: AuthError.unsupportedStep, effect: null)],
-    );
-
-    blocTest<SignOnCubit, SignOnState>(
-      'an empty password does nothing',
-      build: build,
-      act: (c) => c.logIn(''),
-      expect: () => <SignOnState>[],
-    );
-  });
-
-  group('sign up', () {
-    Future<void> join(SignOnCubit c, {String phone = '0803 123 4567'}) async {
-      c.emailChanged('ngozi@example.com');
-      await c.signUp(
-        firstName: 'Ngozi',
-        lastName: 'Okafor',
-        phone: phone,
-        password: 'Secret!123',
+    test('too soon still opens the code screen with the server time', () async {
+      repo.requestCodeResult = Result.err(
+        RateLimitedFailure('x', 'OTP_RESEND_TOO_SOON', {
+          'nextSendAt': next.toIso8601String(),
+        }),
       );
+      final c = build()..emailChanged('ngozi@example.com');
+      await c.continueWithEmail();
+      expect(c.state.error, isNull);
+      expect(c.state.codeNextSendAt, next);
+      expect(c.state.effect, const SignOnEffect.toCode());
+      await c.close();
+    });
+
+    test('too soon without a time is an error, not a dead end', () async {
+      repo.requestCodeResult = const Result.err(
+        RateLimitedFailure('x', 'OTP_RESEND_TOO_SOON'),
+      );
+      final c = build()..emailChanged('ngozi@example.com');
+      await c.continueWithEmail();
+      expect(c.state.error, AuthError.resendTooSoon);
+      expect(c.state.effect, isNull);
+      await c.close();
+    });
+
+    test('offline is reported and nothing opens', () async {
+      repo.requestCodeResult = const Result.err(OfflineFailure());
+      final c = build()..emailChanged('ngozi@example.com');
+      await c.continueWithEmail();
+      expect(c.state.error, AuthError.offline);
+      expect(c.state.busy, isFalse);
+      expect(c.state.effect, isNull);
+      await c.close();
+    });
+
+    test('a second tap while busy is ignored', () async {
+      repo.requestCodeResult = Result.ok(challengeAt(next));
+      final c = build()..emailChanged('ngozi@example.com');
+      await Future.wait([c.continueWithEmail(), c.continueWithEmail()]);
+      expect(repo.calls.length, 1);
+      await c.close();
+    });
+  });
+
+  group('terms', () {
+    test('load, accept', () async {
+      final c = build();
+      await c.loadTermsVersion();
+      expect(c.state.termsVersion, 'terms-test');
+      c.setTermsAccepted(true);
+      expect(c.state.termsAccepted, isTrue);
+      await c.close();
+    });
+
+    test('cannot accept before the version is known', () async {
+      final c = build()..setTermsAccepted(true);
+      expect(c.state.termsAccepted, isFalse);
+      await c.close();
+    });
+
+    test('a failed load is reported and can be retried', () async {
+      repo.termsVersionResult = const Result.err(OfflineFailure());
+      final c = build();
+      await c.loadTermsVersion();
+      expect(c.state.error, AuthError.offline);
+      repo.termsVersionResult = const Result.ok('terms-test');
+      await c.loadTermsVersion();
+      expect(c.state.termsVersion, 'terms-test');
+      expect(c.state.error, isNull);
+      await c.close();
+    });
+  });
+
+  group('complete profile', () {
+    Future<SignOnCubit> ready() async {
+      final c = build()..emailChanged('ngozi@example.com');
+      await c.loadTermsVersion();
+      c.setTermsAccepted(true);
+      return c;
     }
 
-    blocTest<SignOnCubit, SignOnState>(
-      'success sends the +234 number and keeps the challenge',
-      setUp: () => repo.signUpResult = Result.ok(
-        outcomeWith(
-          AuthGate.verifyEmail,
-          challenge: OtpChallenge(
-            expiresAt: DateTime.utc(2026, 11, 21, 10, 10),
-            nextSendAt: DateTime.utc(2026, 11, 21, 10),
-          ),
-        ),
-      ),
-      build: build,
-      act: join,
-      verify: (c) {
-        expect(repo.calls, contains('signUp:+2348031234567'));
-        expect(c.state.challenge?.nextSendAt, DateTime.utc(2026, 11, 21, 10));
-        expect(c.state.effect, isA<SignOnSignedIn>());
-      },
+    Future<void> submit(
+      SignOnCubit c, {
+      String first = ' Ngozi ',
+      String last = ' Okafor ',
+      String phone = '0803 123 4567',
+    }) => c.completeProfile(
+      ticket: 'ticket-of-a-new-address',
+      firstName: first,
+      lastName: last,
+      phone: phone,
     );
 
-    blocTest<SignOnCubit, SignOnState>(
-      'a taken email (409) is reported for the banner',
-      setUp: () => repo.signUpResult = const Result.err(
-        ConflictFailure('x', 'EMAIL_TAKEN'),
-      ),
-      build: build,
-      act: join,
-      verify: (c) => expect(c.state.error, AuthError.emailTaken),
-    );
+    test('sends the ticket, trimmed names, +234 phone and terms', () async {
+      repo.completeProfileResult = Result.ok(outcomeWith(AuthGate.none));
+      final c = await ready();
+      await submit(c);
+      final sent = repo.lastProfile!;
+      expect(sent.ticket, 'ticket-of-a-new-address');
+      expect(sent.firstName, 'Ngozi');
+      expect(sent.lastName, 'Okafor');
+      expect(sent.phone, '+2348031234567');
+      expect(sent.termsVersion, 'terms-test');
+      expect(c.state.signingIn, isTrue);
+      expect(c.state.effect, isA<SignOnSignedIn>());
+      c.effectHandled();
+      expect(c.state.signingIn, isFalse);
+      await c.close();
+    });
 
-    blocTest<SignOnCubit, SignOnState>(
-      'a taken phone (409) is reported for the field',
-      setUp: () => repo.signUpResult = const Result.err(
+    test('terms not accepted: nothing is sent', () async {
+      final c = build();
+      await c.loadTermsVersion();
+      await submit(c);
+      expect(repo.lastProfile, isNull);
+      await c.close();
+    });
+
+    test('a bad phone never reaches the server', () async {
+      final c = await ready();
+      await submit(c, phone: '123');
+      expect(c.state.error, AuthError.phoneInvalid);
+      expect(repo.lastProfile, isNull);
+      await c.close();
+    });
+
+    test('a blank last name is not sent', () async {
+      final c = await ready();
+      await submit(c, last: '  ');
+      expect(repo.lastProfile, isNull);
+      await c.close();
+    });
+
+    test('a phone on another account is reported, nothing opens', () async {
+      repo.completeProfileResult = const Result.err(
         ConflictFailure('x', 'PHONE_TAKEN'),
-      ),
-      build: build,
-      act: join,
-      verify: (c) => expect(c.state.error, AuthError.phoneTaken),
-    );
+      );
+      final c = await ready();
+      await submit(c);
+      expect(c.state.error, AuthError.phoneTaken);
+      expect(c.state.busy, isFalse);
+      expect(c.state.effect, isNull);
+      await c.close();
+    });
 
-    blocTest<SignOnCubit, SignOnState>(
-      'a common password (422) is reported',
-      setUp: () => repo.signUpResult = const Result.err(
-        ValidationFailure({}, 'x', 'PASSWORD_COMMON'),
-      ),
-      build: build,
-      act: join,
-      verify: (c) => expect(c.state.error, AuthError.passwordCommon),
-    );
+    test('stale terms clear the choice so they are fetched again', () async {
+      repo.completeProfileResult = const Result.err(
+        ConflictFailure('x', 'AUTH_TERMS_VERSION_STALE'),
+      );
+      final c = await ready();
+      await submit(c);
+      expect(c.state.error, AuthError.termsStale);
+      expect(c.state.termsVersion, isNull);
+      expect(c.state.termsAccepted, isFalse);
+      await c.close();
+    });
 
-    blocTest<SignOnCubit, SignOnState>(
-      'a number that cannot be Nigerian never reaches the server',
-      build: build,
-      act: (c) => join(c, phone: '12345'),
-      verify: (c) {
-        expect(c.state.error, AuthError.phoneInvalid);
-        expect(repo.calls, isEmpty);
-      },
-    );
+    test('an expired ticket is reported so the screen can start over', () async {
+      repo.completeProfileResult = const Result.err(
+        ValidationFailure({}, 'x', 'OTP_REGISTRATION_INVALID'),
+      );
+      final c = await ready();
+      await submit(c);
+      expect(c.state.error, AuthError.ticketExpired);
+      await c.close();
+    });
 
-    blocTest<SignOnCubit, SignOnState>(
-      'a weak password never reaches the server',
-      build: build,
-      act: (c) async {
-        c.emailChanged('ngozi@example.com');
-        await c.signUp(
-          firstName: 'Ngozi',
-          lastName: 'Okafor',
-          phone: '0803 123 4567',
-          password: 'abc',
-        );
-      },
-      verify: (_) => expect(repo.calls, isEmpty),
-    );
+    test('a step the app cannot finish is not a sign-in', () async {
+      repo.completeProfileResult = const Result.ok(outcomeNoSession);
+      final c = await ready();
+      await submit(c);
+      expect(c.state.error, AuthError.unsupportedStep);
+      expect(c.state.signingIn, isFalse);
+      await c.close();
+    });
   });
-
-  group('live password check', () {
-    blocTest<SignOnCubit, SignOnState>(
-      'length and symbol answer at once, without the server',
-      build: build,
-      act: (c) => c.passwordChanged('abc'),
-      expect: () => [_state()],
-      verify: (c) {
-        expect(c.state.passwordProblems, {
-          PasswordProblem.tooShort,
-          PasswordProblem.noSymbol,
-        });
-        expect(c.state.passwordServerChecked, isFalse);
-        expect(repo.calls, isEmpty);
-      },
-    );
-
-    blocTest<SignOnCubit, SignOnState>(
-      'a common password is flagged after a short pause, only the latest wins',
-      setUp: () => repo.checkResult = const Result.ok(
-        PasswordCheck(ok: false, problems: {PasswordProblem.common}),
-      ),
-      build: build,
-      act: (c) async {
-        c.passwordChanged('Password1');
-        c.passwordChanged('Password1!');
-        await Future<void>.delayed(const Duration(milliseconds: 450));
-      },
-      verify: (c) {
-        expect(c.state.passwordProblems, contains(PasswordProblem.common));
-        expect(c.state.passwordServerChecked, isTrue);
-        // The first, superseded entry was short a symbol: it never hit the
-        // server. Only the settled one did.
-        expect(repo.calls.where((x) => x == 'checkPassword').length, 1);
-      },
-    );
-  });
-
-  blocTest<SignOnCubit, SignOnState>(
-    'an effect is cleared once the page has handled it',
-    build: build,
-    seed: () => const SignOnState(effect: SignOnEffect.toJoin()),
-    act: (c) => c.effectHandled(),
-    expect: () => [_state(effect: null)],
-  );
 }

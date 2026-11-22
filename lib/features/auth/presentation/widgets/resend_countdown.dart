@@ -6,9 +6,6 @@ import 'package:material_ui/material_ui.dart';
 import '../../../../core/theme/app_tokens.dart' hide formatNaira;
 import 'auth_link.dart';
 
-/// "Resend code in 0:55" with a shrinking ring; at zero it becomes the
-/// "Resend code" link. The server owns the back-off (30, 60, 120 s): this only
-/// counts down to the `nextSendAt` it gave. One timer, stopped at zero.
 class const ResendCountdown({
   required final DateTime? nextSendAt,
   required final String Function(String time) waitLabel,
@@ -87,9 +84,12 @@ class _ResendCountdownState() extends State<ResendCountdown> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          widget.waitLabel(time),
-          style: Theme.of(context).textTheme.bodyMedium,
+        Flexible(
+          child: Text(
+            widget.waitLabel(time),
+            style: Theme.of(context).textTheme.bodyMedium,
+            textAlign: TextAlign.center,
+          ),
         ),
         const SizedBox(width: 10),
         ExcludeSemantics(

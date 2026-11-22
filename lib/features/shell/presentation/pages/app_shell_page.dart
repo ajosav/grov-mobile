@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/layout/app_window.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../widgets/app_tab.dart';
+import '../widgets/floating_nav_bar.dart';
 
 /// Tab chrome that adapts to the window (D40):
 /// compact = bottom bar; medium and expanded = navigation rail.
@@ -27,19 +28,13 @@ class const AppShellView({
 
     if (window.isCompact) {
       return Scaffold(
+        // The floating bar sits over the page; the page reads the bar's
+        // height from MediaQuery padding and scrolls clear of it.
+        extendBody: true,
         body: child,
-        bottomNavigationBar: NavigationBar(
+        bottomNavigationBar: FloatingNavBar(
           selectedIndex: index,
-          onDestinationSelected: _select,
-          labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-          destinations: [
-            for (final t in AppTab.values)
-              NavigationDestination(
-                icon: Icon(t.icon),
-                selectedIcon: Icon(t.selectedIcon),
-                label: t.label(l10n),
-              ),
-          ],
+          onSelected: _select,
         ),
       );
     }
