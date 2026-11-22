@@ -15,7 +15,8 @@ class const AuthRemoteDataSource(
   final GatedAuthApi _gated,
   final DeviceIdentityDataSource _device,
 ) {
-  Future<ClientConfigModel> getConfig() async => (await _signOn.getConfig()).data;
+  Future<ClientConfigModel> getConfig() async =>
+      (await _signOn.getConfig()).data;
 
   Future<LookupResponseModel> lookup(String email) async =>
       (await _signOn.lookup({'email': email})).data;

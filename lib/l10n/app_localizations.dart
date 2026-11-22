@@ -382,6 +382,12 @@ abstract class AppLocalizations {
   /// **'Try again'**
   String get authTryAgain;
 
+  /// No description provided for @authRetryCountdown.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again in {time}'**
+  String authRetryCountdown(Object time);
+
   /// No description provided for @passwordTitle.
   ///
   /// In en, this message translates to:
@@ -399,12 +405,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Forgot password?'**
   String get authForgotLink;
-
-  /// No description provided for @errorWrongPassword.
-  ///
-  /// In en, this message translates to:
-  /// **'That password isn’t right. Try again, or reset it.'**
-  String get errorWrongPassword;
 
   /// No description provided for @errorAccountLocked.
   ///

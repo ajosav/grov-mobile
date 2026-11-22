@@ -8,10 +8,8 @@ import '../../domain/entities/password_check.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_remote_data_source.dart';
 
-class const AuthRepositoryImpl(
-  final AuthRemoteDataSource _remote,
-) implements AuthRepository {
-
+class const AuthRepositoryImpl(final AuthRemoteDataSource _remote)
+    implements AuthRepository {
   @override
   Future<Result<AccountLookup>> lookup(String email) =>
       _map(() => _remote.lookup(email), (m) => m.toEntity());

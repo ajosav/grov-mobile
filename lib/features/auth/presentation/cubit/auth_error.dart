@@ -36,7 +36,10 @@ AuthError authErrorOf(Failure failure) => switch (failure) {
   TimeoutFailure() => AuthError.timeout,
   ServerFailure() => AuthError.server,
   UnauthorizedFailure() => AuthError.wrongPassword,
-  ForbiddenFailure() => AuthError.accountLocked,
+  ForbiddenFailure(:final code) =>
+    code == null || code == 'AUTH_ACCOUNT_LOCKED'
+        ? AuthError.accountLocked
+        : AuthError.unknown,
   ConflictFailure(:final code) => switch (code) {
     'EMAIL_TAKEN' => AuthError.emailTaken,
     'PHONE_TAKEN' => AuthError.phoneTaken,
@@ -73,5 +76,11 @@ AuthError authErrorOf(Failure failure) => switch (failure) {
 DateTime? nextSendAtOf(Failure failure) => switch (failure) {
   RateLimitedFailure(:final params) when params['nextSendAt'] is String =>
     DateTime.tryParse(params['nextSendAt']! as String),
+  _ => null,
+};
+
+DateTime? retryAtOf(Failure failure) => switch (failure) {
+  RateLimitedFailure(:final params) when params['retryAt'] is String =>
+    DateTime.tryParse(params['retryAt']! as String),
   _ => null,
 };

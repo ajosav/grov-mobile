@@ -169,6 +169,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authTryAgain => 'Try again';
 
   @override
+  String authRetryCountdown(Object time) {
+    return 'Try again in $time';
+  }
+
+  @override
   String get passwordTitle => 'Welcome back';
 
   @override
@@ -176,10 +181,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get authForgotLink => 'Forgot password?';
-
-  @override
-  String get errorWrongPassword =>
-      'That password isn’t right. Try again, or reset it.';
 
   @override
   String get errorAccountLocked =>

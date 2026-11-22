@@ -35,6 +35,18 @@ void main() {
     expect(f.params['nextSendAt'], '2026-11-21T10:00:00Z');
   });
 
+  test('429 login lockout carries retryAt', () {
+    final f = mapApiFailure(
+      429,
+      body(
+        'AUTH_ACCOUNT_LOCKED',
+        params: {'retryAt': '2026-11-21T10:05:00Z'},
+      ),
+    );
+    expect(f, isA<RateLimitedFailure>());
+    expect((f as RateLimitedFailure).params['retryAt'], '2026-11-21T10:05:00Z');
+  });
+
   test('410 is gone, with the code that says used or expired', () {
     final f = mapApiFailure(410, body('RESET_LINK_USED'));
     expect(f, isA<GoneFailure>());
@@ -47,8 +59,15 @@ void main() {
       'EMAIL_TAKEN',
     );
     expect(
-      mapApiFailure(401, body('AUTH_INVALID_CREDENTIALS')),
-      isA<UnauthorizedFailure>(),
+      mapApiFailure(401, {
+        'code': 'AUTH_INVALID_CREDENTIALS',
+        'message': 'Credentials are wrong',
+      }),
+      isA<UnauthorizedFailure>().having(
+        (failure) => failure.message,
+        'message',
+        'Credentials are wrong',
+      ),
     );
     expect(
       mapApiFailure(403, body('AUTH_ACCOUNT_LOCKED')),

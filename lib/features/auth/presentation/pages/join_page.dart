@@ -79,8 +79,9 @@ class _JoinViewState() extends State<JoinView> {
           a.termsAccepted != b.termsAccepted,
       builder: (context, state) {
         final error = state.error;
-        final termsError =
-            state.termsVersion == null && !state.termsLoading ? error : null;
+        final termsError = state.termsVersion == null && !state.termsLoading
+            ? error
+            : null;
         final phoneError =
             error == AuthError.phoneTaken || error == AuthError.phoneInvalid;
         final commonFailed =
@@ -185,10 +186,7 @@ class _JoinViewState() extends State<JoinView> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   spacing: AppSpace.s2,
                   children: [
-                    AppProgress(
-                      size: 18,
-                      semanticLabel: l10n.authTermsLoading,
-                    ),
+                    AppProgress(size: 18, semanticLabel: l10n.authTermsLoading),
                     Flexible(
                       child: Text(
                         l10n.authTermsLoading,
@@ -203,8 +201,7 @@ class _JoinViewState() extends State<JoinView> {
                 value: state.termsAccepted,
                 onChanged: state.termsVersion == null || state.termsLoading
                     ? null
-                    : (accepted) =>
-                          cubit.setTermsAccepted(accepted ?? false),
+                    : (accepted) => cubit.setTermsAccepted(accepted ?? false),
                 title: Text(l10n.authTermsAcceptance),
               ),
               if (termsError != null)

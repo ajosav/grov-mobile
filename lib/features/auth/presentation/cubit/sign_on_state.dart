@@ -14,6 +14,9 @@ abstract class SignOnState with _$SignOnState {
     @Default('') String email,
     AccountLookup? lookup,
     @Default(false) bool busy,
+
+    /// A sign-in succeeded and the app is moving on: the full-screen transition.
+    @Default(false) bool signingIn,
     String? termsVersion,
     @Default(false) bool termsLoading,
     @Default(false) bool termsAccepted,
@@ -22,6 +25,8 @@ abstract class SignOnState with _$SignOnState {
     /// True once the server has confirmed the checklist (not just local rules).
     @Default(false) bool passwordServerChecked,
     AuthError? error,
+    String? serverErrorMessage,
+    DateTime? retryAt,
 
     /// The code sent by sign-up, so the code screen can start its countdown.
     OtpChallenge? challenge,

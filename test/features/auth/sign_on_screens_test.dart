@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'dart:ui' show DisplayFeature, DisplayFeatureState, DisplayFeatureType;
 
 import 'package:app_mobile/core/di/injection.dart';
@@ -10,6 +12,7 @@ import 'package:app_mobile/features/auth/presentation/cubit/email_code_cubit.dar
 import 'package:app_mobile/features/auth/presentation/pages/email_code_page.dart';
 import 'package:app_mobile/features/auth/presentation/pages/join_page.dart';
 import 'package:app_mobile/features/auth/presentation/pages/password_page.dart';
+import 'package:app_mobile/features/auth/presentation/widgets/sign_in_transition.dart';
 import 'package:app_mobile/features/auth/presentation/pages/phone_page.dart';
 import 'package:app_mobile/features/auth/presentation/pages/verified_page.dart';
 import 'package:app_mobile/features/auth/presentation/pages/welcome_page.dart';
@@ -35,8 +38,12 @@ class _Sessions(this.stored) implements SessionRepository {
   Future<Result<void>> revoke() async => const Result.ok(null);
   @override
   Future<Result<Session?>> restore() async => Result.ok(stored);
+
+  /// When set, saving waits on it, to look at the screen mid sign-in.
+  Completer<void>? holdSave;
   @override
   Future<Result<void>> save(Session s) async {
+    await holdSave?.future;
     stored = s;
     return const Result.ok(null);
   }
@@ -64,6 +71,7 @@ class _Sync({final bool online = true}) implements SyncRepository {
 late FakeAuthRepository _repo;
 late SessionCubit _session;
 late GoRouter _router;
+late _Sessions _sessionsRepo;
 
 Future<void> _pump(
   WidgetTester tester, {
@@ -77,7 +85,8 @@ Future<void> _pump(
     ..devicePixelRatio = 1
     ..displayFeatures = features;
   addTearDown(tester.view.reset);
-  _session = sessionCubitFor(_Sessions(stored));
+  _sessionsRepo = _Sessions(stored);
+  _session = sessionCubitFor(_sessionsRepo);
   addTearDown(_session.close);
   _router = buildRouter(_session);
   addTearDown(_router.dispose);
@@ -241,7 +250,9 @@ void main() {
           ..lookupResult = const Result.ok(
             AccountLookup(exists: true, hasPassword: true),
           )
-          ..logInResult = const Result.err(UnauthorizedFailure());
+          ..logInResult = const Result.err(
+            UnauthorizedFailure('Credentials are wrong'),
+          );
         await _pump(tester);
         await _type(tester, 0, 'ngozi@example.com');
         await tester.tap(find.text('Continue'));
@@ -253,10 +264,7 @@ void main() {
         await _type(tester, 1, 'wrong');
         await tester.tap(find.text('Log in'));
         await tester.pumpAndSettle();
-        expect(
-          find.text('That password isn’t right. Try again, or reset it.'),
-          findsOneWidget,
-        );
+        expect(find.text('Credentials are wrong'), findsOneWidget);
         expect(find.byType(PasswordView), findsOneWidget);
       },
     );
@@ -275,6 +283,39 @@ void main() {
       await tester.pumpAndSettle();
       await _type(tester, 1, 'Secret!123');
       await tester.tap(find.text('Log in'));
+      await tester.pumpAndSettle();
+      expect(find.text('This week’s progress'), findsOneWidget);
+    });
+
+    testWidgets('a full-screen transition covers the gap until Home opens', (
+      tester,
+    ) async {
+      final hold = Completer<void>();
+      _repo
+        ..lookupResult = const Result.ok(
+          AccountLookup(exists: true, hasPassword: true),
+        )
+        ..logInResult = Result.ok(outcomeWith(AuthGate.none));
+      await _pump(tester);
+      final sessions = _sessionsRepo;
+      await _type(tester, 0, 'ngozi@example.com');
+      await tester.tap(find.text('Continue'));
+      await tester.pumpAndSettle();
+      await _type(tester, 1, 'Secret!123');
+      sessions.holdSave = hold;
+      await tester.tap(find.text('Log in'));
+      await tester.pump();
+      await tester.pump();
+      // Signed in on the server, session not saved yet: never a silent gap.
+      await tester.pump(const Duration(milliseconds: 250));
+      expect(find.byType(SignInTransition), findsOneWidget);
+      expect(find.text('Signing in…'), findsWidgets);
+
+      hold.complete();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(find.byType(SignInTransition), findsNothing);
       await tester.pumpAndSettle();
       expect(find.text('This week’s progress'), findsOneWidget);
     });

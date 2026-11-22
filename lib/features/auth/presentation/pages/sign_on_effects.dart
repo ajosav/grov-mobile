@@ -24,8 +24,14 @@ void handleSignOnEffect(BuildContext context, SignOnState state) {
     case SignOnToJoin():
       context.push(Routes.join);
     case SignOnSignedIn(:final session):
-      // The router redirects to the gate screen or Home from here.
-      context.read<SessionCubit>().signedIn(session);
+      // The router redirects to the gate screen or Home once this saves. The
+      // button stays busy until then, so it is acknowledged afterwards.
+      final cubit = context.read<SignOnCubit>();
+      context
+          .read<SessionCubit>()
+          .signedIn(session)
+          .whenComplete(cubit.effectHandled);
+      return;
   }
   context.read<SignOnCubit>().effectHandled();
 }

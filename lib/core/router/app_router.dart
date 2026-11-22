@@ -6,6 +6,7 @@ import '../di/injection.dart';
 
 import '../../features/auth/presentation/cubit/sign_on_cubit.dart';
 import '../../features/auth/presentation/pages/email_code_page.dart';
+import '../../features/auth/presentation/widgets/sign_in_transition.dart';
 import '../../features/auth/presentation/pages/forgot_help_page.dart';
 import '../../features/auth/presentation/pages/forgot_password_page.dart';
 import '../../features/auth/presentation/pages/forgot_sent_page.dart';
@@ -46,8 +47,10 @@ GoRouter buildRouter(SessionCubit session) {
       GoRoute(path: '/', redirect: (_, _) => Routes.home),
       GoRoute(path: Routes.splash, builder: (_, _) => const SplashView()),
       ShellRoute(
-        builder: (context, state, child) =>
-            BlocProvider(create: (_) => getIt<SignOnCubit>(), child: child),
+        builder: (context, state, child) => BlocProvider(
+          create: (_) => getIt<SignOnCubit>(),
+          child: SignInTransitionHost(child: child),
+        ),
         routes: [
           GoRoute(path: Routes.welcome, builder: (_, _) => const WelcomeView()),
           GoRoute(

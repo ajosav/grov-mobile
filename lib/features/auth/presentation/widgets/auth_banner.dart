@@ -19,6 +19,7 @@ class const AuthBanner(
   final AuthBannerKind kind = AuthBannerKind.danger,
   final String? actionLabel,
   final VoidCallback? onAction,
+  final Widget? trailing,
   super.key,
 }) extends StatelessWidget {
   @override
@@ -56,6 +57,9 @@ class const AuthBanner(
               if (actionLabel != null) ...[
                 const SizedBox(width: AppSpace.s2),
                 AuthLink(actionLabel!, onTap: onAction),
+              ] else if (trailing != null) ...[
+                const SizedBox(width: AppSpace.s2),
+                trailing!,
               ],
             ],
           ),

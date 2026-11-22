@@ -7,11 +7,9 @@ import '../../../../core/theme/app_tokens.dart' hide formatNaira;
 import '../../../../core/widgets/app_assets.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../cubit/auth_error.dart';
 import '../cubit/sign_on_cubit.dart';
 import '../cubit/sign_on_state.dart';
 import '../widgets/auth_error_banner.dart';
-import '../widgets/auth_error_text.dart';
 import '../widgets/auth_field.dart';
 import '../widgets/auth_heading.dart';
 import '../widgets/auth_icon_disc.dart';
@@ -56,7 +54,6 @@ class _PasswordViewState() extends State<PasswordView> {
       buildWhen: (a, b) => a.busy != b.busy || a.error != b.error,
       builder: (context, state) {
         final error = state.error;
-        final wrong = error == AuthError.wrongPassword;
         return AuthScaffold(
           onBack: context.pop,
           body: Column(
@@ -66,6 +63,13 @@ class _PasswordViewState() extends State<PasswordView> {
             children: [
               const Center(child: AuthIconDisc(AppAssets.lock)),
               AuthHeading(l10n.passwordTitle, subtitle: l10n.passwordSubtitle),
+              if (error != null)
+                AuthErrorBanner(
+                  error,
+                  serverMessage: state.serverErrorMessage,
+                  retryAt: state.retryAt,
+                  onRetryAvailable: cubit.retryAvailable,
+                ),
               AuthField(
                 label: l10n.authEmailLabel,
                 controller: _email,
@@ -78,8 +82,6 @@ class _PasswordViewState() extends State<PasswordView> {
                 hint: l10n.authPasswordHint,
                 obscure: _obscured,
                 autofocus: true,
-                hasError: wrong,
-                errorText: wrong ? error!.message(l10n) : null,
                 textInputAction: TextInputAction.done,
                 autofillHints: const [AutofillHints.password],
                 onChanged: (_) {
@@ -91,7 +93,6 @@ class _PasswordViewState() extends State<PasswordView> {
                   onToggle: () => setState(() => _obscured = !_obscured),
                 ),
               ),
-              if (error != null && !wrong) AuthErrorBanner(error),
               Center(
                 child: AuthLink(
                   l10n.authForgotLink,
@@ -106,7 +107,8 @@ class _PasswordViewState() extends State<PasswordView> {
               label: l10n.authLogIn,
               loading: state.busy,
               loadingLabel: l10n.authBusySigningIn,
-              onPressed: _password.text.isEmpty
+              onPressed: _password.text.isEmpty ||
+                      (state.retryAt?.isAfter(DateTime.now()) ?? false)
                   ? null
                   : () => cubit.logIn(_password.text),
             ),

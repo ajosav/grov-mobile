@@ -48,16 +48,9 @@ class SignOnCubit({
       case Ok(:final value) when value.trim().isNotEmpty:
         emit(state.copyWith(termsLoading: false, termsVersion: value));
       case Ok():
-        emit(
-          state.copyWith(termsLoading: false, error: AuthError.unknown),
-        );
+        emit(state.copyWith(termsLoading: false, error: AuthError.unknown));
       case Err(:final failure):
-        emit(
-          state.copyWith(
-            termsLoading: false,
-            error: authErrorOf(failure),
-          ),
-        );
+        emit(state.copyWith(termsLoading: false, error: authErrorOf(failure)));
     }
   }
 
@@ -102,8 +95,50 @@ class SignOnCubit({
     if (state.busy || password.isEmpty) {
       return;
     }
-    emit(state.copyWith(busy: true, error: null));
-    _finish(await _logIn((email: state.email, password: password)));
+    if (state.retryAt?.isAfter(DateTime.now()) ?? false) {
+      return;
+    }
+    emit(
+      state.copyWith(
+        busy: true,
+        error: null,
+        serverErrorMessage: null,
+        retryAt: null,
+      ),
+    );
+    final result = await _logIn((email: state.email, password: password));
+    switch (result) {
+      case Ok(:final value):
+        final session = value.session;
+        if (session == null) {
+          emit(
+            state.copyWith(
+              busy: false,
+              error: AuthError.unsupportedStep,
+              serverErrorMessage: null,
+            ),
+          );
+          return;
+        }
+        emit(
+          state.copyWith(
+            busy: false,
+            signingIn: true,
+            challenge: value.challenge,
+            serverErrorMessage: null,
+            effect: SignOnEffect.signedIn(session),
+          ),
+        );
+      case Err(:final failure):
+        emit(
+          state.copyWith(
+            busy: false,
+            error: authErrorOf(failure),
+            serverErrorMessage: failure.message,
+            retryAt: retryAtOf(failure),
+          ),
+        );
+    }
   }
 
   void passwordChanged(String password) => _live.update(
@@ -170,9 +205,16 @@ class SignOnCubit({
     state.copyWith(error: null, effect: const SignOnEffect.toPassword()),
   );
 
-  void clearError() => emit(state.copyWith(error: null));
+  void clearError() => emit(
+    state.copyWith(error: null, serverErrorMessage: null),
+  );
 
-  void effectHandled() => emit(state.copyWith(effect: null));
+  void retryAvailable() =>
+      emit(state.copyWith(error: null, serverErrorMessage: null, retryAt: null));
+
+  /// The page acted on the effect. Also ends `signingIn` (the full-screen
+  /// transition), which runs from the server's yes until the session is saved.
+  void effectHandled() => emit(state.copyWith(effect: null, signingIn: false));
 
   void _finish(Result<AuthOutcome> result) {
     switch (result) {
@@ -185,6 +227,8 @@ class SignOnCubit({
         emit(
           state.copyWith(
             busy: false,
+            // The transition covers the screen while the session is saved.
+            signingIn: true,
             challenge: value.challenge,
             effect: SignOnEffect.signedIn(session),
           ),

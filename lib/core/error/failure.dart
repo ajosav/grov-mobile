@@ -20,9 +20,11 @@ final class const ValidationFailure(
 final class const BadRequestFailure([super.message, final String? code])
     extends Failure;
 
-final class const UnauthorizedFailure() extends Failure;
+final class const UnauthorizedFailure([super.message, final String? code])
+    extends Failure;
 
-final class const ForbiddenFailure([super.message]) extends Failure;
+final class const ForbiddenFailure([super.message, final String? code])
+    extends Failure;
 
 final class const NotFoundFailure() extends Failure;
 

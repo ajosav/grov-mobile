@@ -10,7 +10,7 @@ extension AuthErrorText on AuthError {
     AuthError.server => l10n.errorServer,
     AuthError.invalidEmail => l10n.errorInvalidEmail,
     AuthError.socialOnly => l10n.errorSocialOnly,
-    AuthError.wrongPassword => l10n.errorWrongPassword,
+    AuthError.wrongPassword => l10n.errorUnknown,
     AuthError.accountLocked => l10n.errorAccountLocked,
     AuthError.emailTaken => l10n.errorEmailTaken(BrandConfig.name),
     AuthError.phoneTaken => l10n.errorPhoneTaken,

@@ -135,13 +135,35 @@ void main() {
     );
 
     blocTest<SignOnCubit, SignOnState>(
+      'the page acknowledging the sign-in ends the transition and clears the effect',
+      setUp: () => repo.logInResult = Result.ok(outcomeWith(AuthGate.none)),
+      build: build,
+      seed: () => const SignOnState(email: 'ngozi@example.com'),
+      act: (c) async {
+        await c.logIn('Secret!123');
+        c.effectHandled();
+      },
+      expect: () => [
+        _state(busy: true),
+        isA<SignOnState>().having((s) => s.signingIn, 'signingIn', isTrue),
+        isA<SignOnState>()
+            .having((s) => s.signingIn, 'signingIn', isFalse)
+            .having((s) => s.effect, 'effect', isNull),
+      ],
+    );
+
+    blocTest<SignOnCubit, SignOnState>(
       'a wrong password (401) is a wrong password',
-      setUp: () => repo.logInResult = const Result.err(UnauthorizedFailure()),
+      setUp: () => repo.logInResult = const Result.err(
+        UnauthorizedFailure('Credentials are wrong'),
+      ),
       build: build,
       seed: () => const SignOnState(email: 'ngozi@example.com'),
       act: (c) => c.logIn('nope'),
       skip: 1,
       expect: () => [_state(busy: false, error: AuthError.wrongPassword)],
+      verify: (c) =>
+          expect(c.state.serverErrorMessage, 'Credentials are wrong'),
     );
 
     blocTest<SignOnCubit, SignOnState>(
@@ -152,6 +174,31 @@ void main() {
       act: (c) => c.logIn('x'),
       skip: 1,
       expect: () => [_state(error: AuthError.accountLocked)],
+    );
+
+    blocTest<SignOnCubit, SignOnState>(
+      'a 429 lockout stores retryAt and blocks another login',
+      setUp: () => repo.logInResult = Result.err(
+        RateLimitedFailure(
+          'Too many login attempts',
+          'AUTH_ACCOUNT_LOCKED',
+          const {'retryAt': '2099-11-21T10:05:00Z'},
+        ),
+      ),
+      build: build,
+      seed: () => const SignOnState(email: 'ngozi@example.com'),
+      act: (c) async {
+        await c.logIn('x');
+        await c.logIn('y');
+      },
+      skip: 1,
+      expect: () => [
+        _state(busy: false, error: AuthError.accountLocked),
+      ],
+      verify: (c) {
+        expect(c.state.retryAt, DateTime.utc(2099, 11, 21, 10, 5));
+        expect(c.state.serverErrorMessage, 'Too many login attempts');
+      },
     );
 
     blocTest<SignOnCubit, SignOnState>(
@@ -310,8 +357,10 @@ void main() {
           password: 'abc',
         );
       },
-      verify: (_) =>
-          expect(repo.calls.where((call) => call.startsWith('signUp:')), isEmpty),
+      verify: (_) => expect(
+        repo.calls.where((call) => call.startsWith('signUp:')),
+        isEmpty,
+      ),
     );
   });
 
