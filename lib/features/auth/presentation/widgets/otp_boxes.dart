@@ -109,6 +109,9 @@ class _OtpBoxesState() extends State<OtpBoxes> {
               enabled: !disabled,
               keyboardType: TextInputType.number,
               autofillHints: const [AutofillHints.oneTimeCode],
+              enableSuggestions: false,
+              autocorrect: false,
+              enableIMEPersonalizedLearning: false,
               inputFormatters: [
                 FilteringTextInputFormatter.digitsOnly,
                 LengthLimitingTextInputFormatter(widget.length),

@@ -155,7 +155,6 @@ class _ProfileViewState() extends State<ProfileView> {
                 ),
                 hasError: phoneError,
                 errorText: phoneError ? error!.message(l10n) : null,
-                helper: l10n.authPhoneHelper,
                 onChanged: (_) {
                   if (phoneError) cubit.clearError();
                 },
